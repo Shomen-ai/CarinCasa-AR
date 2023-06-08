@@ -13,7 +13,7 @@ final class ProfileCell: UICollectionViewCell {
         let view = UILabel()
         view.textColor = .black
         view.textAlignment = .center
-        view.font = UIFont.systemFont(ofSize: 16)
+        view.font = UIFont(name: "FuturaPT-Light", size: 16)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -36,10 +36,16 @@ final class ProfileCell: UICollectionViewCell {
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(arrowImageView)
-        contentView.backgroundColor = .red
+        contentView.backgroundColor = ColorPalette.backgrounColor
+        contentView.layer.borderColor = UIColor.black.cgColor
+        contentView.layer.borderWidth = 1
+        contentView.layer.cornerRadius = 25
         NSLayoutConstraint.activate([
             imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            imageView.widthAnchor.constraint(equalToConstant: contentView.frame.height - 30),
+            imageView.heightAnchor.constraint(equalToConstant: contentView.frame.height - 30),
+            
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 20),
             arrowImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

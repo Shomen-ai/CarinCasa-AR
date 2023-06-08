@@ -50,44 +50,57 @@ final class ProductViewController: UIViewController {
         return view
     }()
     
+    private var price: [Int] = [0] {
+        didSet {
+            self.sections[4].setOrderItems( [["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "от \(self.price.reduce(0, +))р"]])
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+//            print(self.price)
+        }
+    }
+        
+    private var name = ""
     public var identifier: String = "" {
         didSet {
-                APIManager.shared.findOne(id: self.identifier, completion: { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success(let furniture):
-                        let productSection: ProductSection = {
-                            .product(["Henry1", "Henry2", "Henry3", "Henry4", "Henry5"])
-                        }()
-                        self.sections.append(productSection)
-                        let descriptionSection: ProductSection = {
-                            .description([furniture.description])
-                        }()
-                        self.sections.append(descriptionSection)
-                        let configuratorDescription: ProductSection = {
-                            .configuratorDescription([["КОНФИГУРАТОР", "Воспользуйтесь конфигуратором, чтобы узнать предварительную стоимость изделия"]])
-                        }()
-                        self.sections.append(configuratorDescription)
-                        let configurator: ProductSection = {
-                            .configurator(furniture.configurations)
-                        }()
-                        self.sections.append(configurator)
-                        let price: ProductSection = {
-                            .price([["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "0р"]])
-                        }()
-                        self.sections.append(price)
-                        let order: ProductSection = {
-                            .order(["ОСТАВИТЬ ЗАЯВКУ"])
-                        }()
-                        self.sections.append(order)
-                        DispatchQueue.main.async {
-                            self.navigationItem.titleView = self.createCustomTitleView(title: furniture.name,
-                                                                             subtitle: furniture.type)
-                        }
-                    case .failure(let error):
-                        print(error)
+            APIManager.shared.findOne(id: self.identifier, completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let furniture):
+                    let productSection: ProductSection = {
+                        .product(furniture.images)
+                    }()
+                    self.sections.append(productSection)
+                    let descriptionSection: ProductSection = {
+                        .description([furniture.description])
+                    }()
+                    self.sections.append(descriptionSection)
+                    let configuratorDescription: ProductSection = {
+                        .configuratorDescription([["КОНФИГУРАТОР", "Воспользуйтесь конфигуратором, чтобы узнать предварительную стоимость изделия"]])
+                    }()
+                    self.sections.append(configuratorDescription)
+                    let configurator: ProductSection = {
+                        .configurator(furniture.configurations)
+                    }()
+                    self.sections.append(configurator)
+                    let price: ProductSection = {
+                        .price([["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "от \(self.price.reduce(0, +))р"]])
+                    }()
+                    self.sections.append(price)
+                    let order: ProductSection = {
+                        .order(["ОСТАВИТЬ ЗАЯВКУ"])
+                    }()
+                    self.sections.append(order)
+                    self.name = furniture.name
+                    self.price = Array(repeating: 0, count: furniture.configurations.count)
+                    DispatchQueue.main.async {
+                        self.navigationItem.titleView = self.createCustomTitleView(title: furniture.name,
+                                                                            subtitle: furniture.type)
                     }
-                })
+                case .failure(let error):
+                    print(error)
+                }
+            })
         }
     }
     
@@ -121,9 +134,21 @@ final class ProductViewController: UIViewController {
     
     @objc func showARModule() {
         print("ARModule was showed")
+        let newVC = ARViewController()
+        newVC.hidesBottomBarWhenPushed = true
+        newVC.navigationController?.navigationBar.isHidden = true
+        navigationController?.pushViewController(newVC, animated: true)
     }
 }
 
+// MARK: - ConfigureCell Protocol
+extension ProductViewController: ConfiguratorCellDelegate {
+    func didSelectItemsPrice(withTotalSum totalSum: Int, withTag index: Int) {
+        self.price[index] = totalSum
+    }
+    
+    
+}
 // MARK: - Create NavigationBar
 extension ProductViewController {
     private func setupNavBar() {
@@ -201,14 +226,25 @@ extension ProductViewController {
                 return self.createDescriptionSection()
             case .configuratorDescription(_):
                 return self.createConfiguratorDescriptionSection()
-            case .configurator(_):
-                return self.createConfiguratorSection()
+            case .configurator(let configuration):
+                let heights = self.findHeight(conf: configuration)
+                return self.createConfiguratorSection(heights: heights)
             case .price(_):
                 return self.createPriceSection()
             case .order(_):
                 return self.createOrderSection()
             }
         }
+    }
+    
+    private func findHeight(conf: [Configuration]) -> [Double] {
+        var result: [Double] = []
+        for i in 0..<conf.count {
+            let collectionHeight = 50.0 * Double(conf[i].type.count) + 10.0 * Double((conf[i].type.count - 1))
+            let labelHeightAndMargins = 37.0
+            result.append(collectionHeight + labelHeightAndMargins)
+        }
+        return result
     }
     
     private func createProductSection() -> NSCollectionLayoutSection {
@@ -249,23 +285,28 @@ extension ProductViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .none
         section.interGroupSpacing = 5
-        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 10)]
+        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 5)]
         section.supplementaryContentInsetsReference = .automatic
         return section
     }
     
-    private func createConfiguratorSection() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1),
-                                                            heightDimension: .fractionalHeight(1)))
+    private func createConfiguratorSection(heights: [Double]) -> NSCollectionLayoutSection {
+        var items: [NSCollectionLayoutItem] = []
+        for i in 0..<heights.count {
+            let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1),
+                                                                heightDimension: .absolute(heights[i])))
+            items.append(item)
+        }
         let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(widthDimension: .fractionalWidth(0.975),
-                                                              heightDimension: .fractionalHeight(0.3)),
-                                                       subitems: [item])
-        group.interItemSpacing = .fixed(10)
+                                                                       heightDimension: .absolute(heights.reduce(0, +))),
+                                                     subitems: items.compactMap {$0} )
+        
+//        group.interItemSpacing = .fixed(10)
         group.edgeSpacing = .init(leading: .fixed(5), top: .fixed(0), trailing: .fixed(5), bottom: .fixed(0))
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .none
         section.interGroupSpacing = 5
-        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 10)]
+        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 5)]
         section.supplementaryContentInsetsReference = .automatic
         return section
     }
@@ -280,7 +321,7 @@ extension ProductViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .none
         section.interGroupSpacing = 5
-        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 10)]
+        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 5)]
         section.supplementaryContentInsetsReference = .automatic
         return section
     }
@@ -295,7 +336,7 @@ extension ProductViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .none
         section.interGroupSpacing = 5
-        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 10)]
+        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 5)]
         section.supplementaryContentInsetsReference = .automatic
         return section
     }
@@ -330,7 +371,7 @@ extension ProductViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(imageName: product[indexPath.row])
+            cell.configureCell(imageName: product[indexPath.row], name: name)
             return cell
             
         case .description(let description):
@@ -349,6 +390,7 @@ extension ProductViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
+            
             cell.configureCell(titleString: confDesc[indexPath.row][0],
                                subTitleString: confDesc[indexPath.row][1])
             return cell
@@ -357,6 +399,7 @@ extension ProductViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
+            cell.tag = indexPath.row
             cell.configureCell(titleString: configurator[indexPath.row].title,
                                configurations: configurator[indexPath.row])
             return cell
@@ -395,5 +438,13 @@ extension ProductViewController: UICollectionViewDataSource {
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch sections[indexPath.section] {
+        case .configurator(_):
+            print("\(indexPath.row) - \(indexPath.item) ")
+        default:
+            return
+        }
+    }
 }
 

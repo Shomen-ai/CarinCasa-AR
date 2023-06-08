@@ -14,7 +14,7 @@ struct MockDataForInfoViewController {
     }()
     
     private let profile: InfoSection = {
-        .profile([.init(title: "Профиль", image: "person.crop.circle.fill")])
+        .profile([.init(title: "ПРОФИЛЬ", image: "person.crop.circle.fill")])
     }()
     
     var pageData: [InfoSection] {

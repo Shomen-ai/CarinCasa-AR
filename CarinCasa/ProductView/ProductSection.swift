@@ -23,7 +23,7 @@ enum ProductSection {
                 return items
             }
         }
-
+    
     var count: Int {
         return items.count
     }
@@ -43,5 +43,12 @@ enum ProductSection {
         case .configuratorDescription(_):
             return ""
         }
+    }
+    
+    mutating func setOrderItems(_ newItems: [[String]]) {
+        guard case .price = self else {
+            return
+        }
+        self = .price(newItems)
     }
 }

@@ -1,6 +1,12 @@
 import UIKit
 
+protocol ConfiguratorCellDelegate: AnyObject {
+    func didSelectItemsPrice(withTotalSum totalSum: Int, withTag index: Int)
+}
+
 final class СonfiguratorCell: UICollectionViewCell {
+    
+    weak var delegate: ConfiguratorCellDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -26,6 +32,7 @@ final class СonfiguratorCell: UICollectionViewCell {
         didSet {
             collectionView.reloadData()
             collectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .top)
+            updateTotalSum()
         }
     }
     
@@ -34,6 +41,10 @@ final class СonfiguratorCell: UICollectionViewCell {
         setupLayout()
         setupCollectionView()
     }
+    
+    required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     
     func setupLayout() {
         contentView.addSubview(titleLabel)
@@ -60,13 +71,25 @@ final class СonfiguratorCell: UICollectionViewCell {
         collectionView.collectionViewLayout = UICollectionViewFlowLayout()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     public func configureCell(titleString: String, configurations: Configuration) {
         titleLabel.text = titleString
         items = configurations
+    }
+    
+    private var totalSum: Int = 0
+    
+    private func updateTotalSum() {
+        totalSum = 0
+        
+        for indexPath in collectionView.indexPathsForSelectedItems ?? [] {
+            let priceString = items.price[indexPath.item]
+            if let price = Int(priceString) {
+                totalSum += price
+            }
+        }
+        delegate?.didSelectItemsPrice(withTotalSum: totalSum, withTag: tag)
+        // Здесь вы можете выполнить необходимые вам действия на основе полученной суммы
+        // Например, обновить интерфейс или передать данные обратно в главный ViewController
     }
 }
 
@@ -90,22 +113,17 @@ extension СonfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSourc
         return cell
     }
     
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ConfiguratorSubCell.identifier, for: indexPath) as? ConfiguratorSubCell
-//        else { return }
-//        print("selected")
-////        cell.updateAppearanceOnSelection()
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ConfiguratorSubCell.identifier, for: indexPath) as? ConfiguratorSubCell
-//        else { return }
-//        print("deselected")
-////        cell.updateAppearanceOnSelection()
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        updateTotalSum()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        updateTotalSum()
+    }
 }
 
 final class ConfiguratorSubCell: UICollectionViewCell {
+    
     
     private let title: UILabel = {
         let label = UILabel()
@@ -166,20 +184,12 @@ final class ConfiguratorSubCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            layer.borderWidth = isSelected ? 3 : 1
+            layer.borderWidth = isSelected ? 2 : 1
             layer.borderColor = isSelected ? UIColor.black.cgColor : UIColor.gray.cgColor
-            self.title.textColor = isSelected ? .black : .gray
-            self.price.textColor = isSelected ? .black : .gray
+            self.title.textColor = isSelected ? .black : .darkGray
+            self.price.textColor = isSelected ? .black : .darkGray
         }
     }
-//    public func updateAppearanceOnSelection() {
-//        print("is Selected", isSelected)
-//        if isSelected {
-//            layer.borderWidth += 2.0// Увеличиваем borderWidth
-//        } else {
-//            layer.borderWidth = 1 // Восстанавливаем начальное значение borderWidth
-//        }
-//    }
 }
 
 

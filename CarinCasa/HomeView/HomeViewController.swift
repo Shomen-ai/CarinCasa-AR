@@ -15,10 +15,7 @@ final class HomeViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success(let product):
-                    let item: HomeSection = {
-                        .products(product.furniture)
-                    }()
-                    self.sections.append(item)
+                    self.sectionItems = product
                 case .failure(let error):
                     print(error)
                 }
@@ -38,7 +35,6 @@ final class HomeViewController: UIViewController {
         
     }
     
-    private var images: [UIImageView] = []
     private let collectionView: UICollectionView = {
         let collectionViewLayout = UICollectionViewLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
@@ -62,6 +58,16 @@ final class HomeViewController: UIViewController {
         view.lineWidth = 2.0
         return view
     }()
+    
+    private var sectionItems: Product? = nil {
+        didSet {
+            guard let sectionItems = sectionItems else { return }
+            let item: HomeSection = {
+                .products(sectionItems.furniture)
+            }()
+            self.sections.append(item)
+        }
+    }
     
     private var sections: [HomeSection] = [] {
         didSet {
@@ -92,37 +98,67 @@ final class HomeViewController: UIViewController {
         let alertController = UIAlertController(title: "Категория", message: nil, preferredStyle: .actionSheet)
         
         let action1 = UIAlertAction(title: "Все изделия", style: .default) { _ in
-            print("Все изделия button was tapped")
+            guard let sectionItems = self.sectionItems else { return }
+            let item: HomeSection = {
+                .products(sectionItems.furniture)
+            }()
+            self.sections = []
+            self.sections.append(item)
         }
         alertController.addAction(action1)
         action1.setValue(UIColor.black, forKey: "titleTextColor")
         
         let action2 = UIAlertAction(title: "Столы", style: .default) { _ in
-            print("Столы button was tapped")
+            guard let sectionItems = self.sectionItems else { return }
+            let item: HomeSection = {
+                .products(sectionItems.furniture.filter {$0.type == "Стол"})
+            }()
+            self.sections = []
+            self.sections.append(item)
         }
         alertController.addAction(action2)
         action2.setValue(UIColor.black, forKey: "titleTextColor")
         
         let action3 = UIAlertAction(title: "Консоли и зеркала", style: .default) { _ in
-            print("Консоли и зеркала button was tapped")
+            guard let sectionItems = self.sectionItems else { return }
+            let item: HomeSection = {
+                .products(sectionItems.furniture.filter {$0.type == "Консоли и зеркала"})
+            }()
+            self.sections = []
+            self.sections.append(item)
         }
         alertController.addAction(action3)
         action3.setValue(UIColor.black, forKey: "titleTextColor")
         
         let action4 = UIAlertAction(title: "Стулья", style: .default) { _ in
-            print("Стулья button was tapped")
+            guard let sectionItems = self.sectionItems else { return }
+            let item: HomeSection = {
+                .products(sectionItems.furniture.filter {$0.type == "Стулья"})
+            }()
+            self.sections = []
+            self.sections.append(item)
         }
         alertController.addAction(action4)
         action4.setValue(UIColor.black, forKey: "titleTextColor")
         
         let action5 = UIAlertAction(title: "Журнальные столики", style: .default) { _ in
-            print("Журнальные столики button was tapped")
+            guard let sectionItems = self.sectionItems else { return }
+            let item: HomeSection = {
+                .products(sectionItems.furniture.filter {$0.type == "Журнальные столики"})
+            }()
+            self.sections = []
+            self.sections.append(item)
         }
         alertController.addAction(action5)
         action5.setValue(UIColor.black, forKey: "titleTextColor")
         
         let action6 = UIAlertAction(title: "Комоды", style: .default) { _ in
-            print("Комоды button was tapped")
+            guard let sectionItems = self.sectionItems else { return }
+            let item: HomeSection = {
+                .products(sectionItems.furniture.filter {$0.type == "Комоды"})
+            }()
+            self.sections = []
+            self.sections.append(item)
         }
         alertController.addAction(action6)
         action6.setValue(UIColor.black, forKey: "titleTextColor")
@@ -347,6 +383,5 @@ extension HomeViewController: UICollectionViewDataSource {
             newVC.identifier = product[indexPath.item].id
             self.navigationController?.pushViewController(newVC, animated: true)
         }
-        
     }
 }

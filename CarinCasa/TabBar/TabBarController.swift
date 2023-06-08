@@ -19,7 +19,7 @@ final class MainTabBarController: UITabBarController {
                 viewController: InfoViewController(),
                 image: UIImage(systemName: "person.crop.circle")
             ),
-            generateVC(viewController: DropDownMenuViewController(),
+            generateVC(viewController: ARViewController(),
                        image: UIImage(systemName: "questionmark.diamond")
             )
         ]

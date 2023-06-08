@@ -13,6 +13,7 @@ final class DescriptionCell: UICollectionViewCell {
         return view
     }()
     
+    public var optimalHeight: Double = 0.0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,12 +71,13 @@ final class DescriptionCell: UICollectionViewCell {
                 }
             }
         }
+        optimalHeight = titleLabel.frame.height + 20
     }
     
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let targetSize = CGSize(width: layoutAttributes.frame.width, height: UIView.layoutFittingCompressedSize.height)
-        layoutAttributes.frame.size = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
-        return layoutAttributes
-    }
+//    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+//        let targetSize = CGSize(width: layoutAttributes.frame.width, height: UIView.layoutFittingCompressedSize.height)
+//        layoutAttributes.frame.size = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+//        return layoutAttributes
+//    }
 }
 

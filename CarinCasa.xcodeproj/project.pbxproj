@@ -8,10 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		6002E0892A2C075300345AE9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0882A2C075300345AE9 /* AppDelegate.swift */; };
-		6002E08D2A2C075300345AE9 /* Experience.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = 6002E08C2A2C075300345AE9 /* Experience.rcproject */; };
 		6002E0922A2C075700345AE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6002E0912A2C075700345AE9 /* Assets.xcassets */; };
 		6002E0952A2C075700345AE9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6002E0932A2C075700345AE9 /* LaunchScreen.storyboard */; };
-		6002E09E2A2C083900345AE9 /* DropDownMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E09C2A2C083900345AE9 /* DropDownMenuViewController.swift */; };
+		6002E09E2A2C083900345AE9 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E09C2A2C083900345AE9 /* TestViewController.swift */; };
 		6002E09F2A2C083900345AE9 /* CircleStrokeSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E09D2A2C083900345AE9 /* CircleStrokeSpinner.swift */; };
 		6002E0A42A2C084000345AE9 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0A12A2C084000345AE9 /* UIImageViewExtension.swift */; };
 		6002E0A52A2C084000345AE9 /* CellExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0A22A2C084000345AE9 /* CellExtension.swift */; };
@@ -37,7 +36,6 @@
 		6002E0D52A2C086400345AE9 /* HeaderSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0CA2A2C086400345AE9 /* HeaderSupplementaryView.swift */; };
 		6002E0D62A2C086400345AE9 /* ProductItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0CB2A2C086400345AE9 /* ProductItem.swift */; };
 		6002E0D72A2C086400345AE9 /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0CC2A2C086400345AE9 /* ProductViewController.swift */; };
-		6002E0D82A2C086400345AE9 /* MockDataForProductVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0CD2A2C086400345AE9 /* MockDataForProductVC.swift */; };
 		6002E0E02A2C086A00345AE9 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0DB2A2C086A00345AE9 /* ProductCell.swift */; };
 		6002E0E12A2C086A00345AE9 /* HomeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0DC2A2C086A00345AE9 /* HomeItem.swift */; };
 		6002E0E22A2C086A00345AE9 /* HomeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0DD2A2C086A00345AE9 /* HomeSection.swift */; };
@@ -46,15 +44,17 @@
 		6002E0E72A2C087500345AE9 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0E62A2C087500345AE9 /* TabBarController.swift */; };
 		6002E0E92A2C088400345AE9 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0E82A2C088400345AE9 /* ColorPalette.swift */; };
 		6002E0F02A2C0AEC00345AE9 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6002E0EF2A2C0AEC00345AE9 /* SDWebImage */; };
+		6002E0F32A2CC0F000345AE9 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6002E0F22A2CC0F000345AE9 /* ARViewController.swift */; };
+		6002E0F52A2CFAC000345AE9 /* Henry.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 6002E0F42A2CFABF00345AE9 /* Henry.usdz */; };
+		6089ED822A2F3E92002B34DD /* PageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6089ED812A2F3E92002B34DD /* PageViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6002E0852A2C075300345AE9 /* CarinCasa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarinCasa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6002E0882A2C075300345AE9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6002E08C2A2C075300345AE9 /* Experience.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = Experience.rcproject; sourceTree = "<group>"; };
 		6002E0912A2C075700345AE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6002E0942A2C075700345AE9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		6002E09C2A2C083900345AE9 /* DropDownMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownMenuViewController.swift; sourceTree = "<group>"; };
+		6002E09C2A2C083900345AE9 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		6002E09D2A2C083900345AE9 /* CircleStrokeSpinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleStrokeSpinner.swift; sourceTree = "<group>"; };
 		6002E0A12A2C084000345AE9 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		6002E0A22A2C084000345AE9 /* CellExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellExtension.swift; sourceTree = "<group>"; };
@@ -80,7 +80,6 @@
 		6002E0CA2A2C086400345AE9 /* HeaderSupplementaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderSupplementaryView.swift; sourceTree = "<group>"; };
 		6002E0CB2A2C086400345AE9 /* ProductItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductItem.swift; sourceTree = "<group>"; };
 		6002E0CC2A2C086400345AE9 /* ProductViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
-		6002E0CD2A2C086400345AE9 /* MockDataForProductVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDataForProductVC.swift; sourceTree = "<group>"; };
 		6002E0DB2A2C086A00345AE9 /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
 		6002E0DC2A2C086A00345AE9 /* HomeItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeItem.swift; sourceTree = "<group>"; };
 		6002E0DD2A2C086A00345AE9 /* HomeSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeSection.swift; sourceTree = "<group>"; };
@@ -89,6 +88,9 @@
 		6002E0E62A2C087500345AE9 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		6002E0E82A2C088400345AE9 /* ColorPalette.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 		6002E0EA2A2C08B700345AE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6002E0F22A2CC0F000345AE9 /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
+		6002E0F42A2CFABF00345AE9 /* Henry.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Henry.usdz; sourceTree = "<group>"; };
+		6089ED812A2F3E92002B34DD /* PageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,14 +127,15 @@
 				6002E0EA2A2C08B700345AE9 /* Info.plist */,
 				6002E0882A2C075300345AE9 /* AppDelegate.swift */,
 				6002E0E82A2C088400345AE9 /* ColorPalette.swift */,
+				6002E09D2A2C083900345AE9 /* CircleStrokeSpinner.swift */,
 				6002E0E52A2C087500345AE9 /* TabBar */,
 				6002E0D92A2C086A00345AE9 /* HomeView */,
 				6002E0C12A2C086400345AE9 /* ProductView */,
 				6002E0B12A2C085B00345AE9 /* ProfileView */,
+				6002E0F12A2CC09F00345AE9 /* ARView */,
 				6002E0AC2A2C085100345AE9 /* APIService */,
 				6002E0A02A2C084000345AE9 /* Extensions */,
-				6002E09B2A2C083900345AE9 /* ComponentsThatNeedToBeDone */,
-				6002E08C2A2C075300345AE9 /* Experience.rcproject */,
+				6002E09B2A2C083900345AE9 /* TestView */,
 				6002E0A72A2C084A00345AE9 /* Fonts */,
 				6002E0912A2C075700345AE9 /* Assets.xcassets */,
 				6002E0932A2C075700345AE9 /* LaunchScreen.storyboard */,
@@ -140,13 +143,13 @@
 			path = CarinCasa;
 			sourceTree = "<group>";
 		};
-		6002E09B2A2C083900345AE9 /* ComponentsThatNeedToBeDone */ = {
+		6002E09B2A2C083900345AE9 /* TestView */ = {
 			isa = PBXGroup;
 			children = (
-				6002E09C2A2C083900345AE9 /* DropDownMenuViewController.swift */,
-				6002E09D2A2C083900345AE9 /* CircleStrokeSpinner.swift */,
+				6002E09C2A2C083900345AE9 /* TestViewController.swift */,
+				6089ED812A2F3E92002B34DD /* PageViewCell.swift */,
 			);
-			path = ComponentsThatNeedToBeDone;
+			path = TestView;
 			sourceTree = "<group>";
 		};
 		6002E0A02A2C084000345AE9 /* Extensions */ = {
@@ -202,11 +205,10 @@
 		6002E0C12A2C086400345AE9 /* ProductView */ = {
 			isa = PBXGroup;
 			children = (
-				6002E0C22A2C086400345AE9 /* ProductSection.swift */,
 				6002E0C32A2C086400345AE9 /* Cells */,
 				6002E0CB2A2C086400345AE9 /* ProductItem.swift */,
+				6002E0C22A2C086400345AE9 /* ProductSection.swift */,
 				6002E0CC2A2C086400345AE9 /* ProductViewController.swift */,
-				6002E0CD2A2C086400345AE9 /* MockDataForProductVC.swift */,
 			);
 			path = ProductView;
 			sourceTree = "<group>";
@@ -251,6 +253,15 @@
 				6002E0E62A2C087500345AE9 /* TabBarController.swift */,
 			);
 			path = TabBar;
+			sourceTree = "<group>";
+		};
+		6002E0F12A2CC09F00345AE9 /* ARView */ = {
+			isa = PBXGroup;
+			children = (
+				6002E0F22A2CC0F000345AE9 /* ARViewController.swift */,
+				6002E0F42A2CFABF00345AE9 /* Henry.usdz */,
+			);
+			path = ARView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -317,6 +328,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6002E0F52A2CFAC000345AE9 /* Henry.usdz in Resources */,
 				6002E0952A2C075700345AE9 /* LaunchScreen.storyboard in Resources */,
 				6002E0AA2A2C084A00345AE9 /* FuturaPT-Medium.ttf in Resources */,
 				6002E0AB2A2C084A00345AE9 /* FuturaPT-Light.ttf in Resources */,
@@ -331,6 +343,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6089ED822A2F3E92002B34DD /* PageViewCell.swift in Sources */,
 				6002E0E92A2C088400345AE9 /* ColorPalette.swift in Sources */,
 				6002E0BC2A2C085B00345AE9 /* OrdersCell.swift in Sources */,
 				6002E0E32A2C086A00345AE9 /* MokeDataForHomeVC.swift in Sources */,
@@ -340,11 +353,12 @@
 				6002E0CE2A2C086400345AE9 /* ProductSection.swift in Sources */,
 				6002E0D12A2C086400345AE9 /* ConfiguratorDescription.swift in Sources */,
 				6002E0A52A2C084000345AE9 /* CellExtension.swift in Sources */,
-				6002E09E2A2C083900345AE9 /* DropDownMenuViewController.swift in Sources */,
+				6002E09E2A2C083900345AE9 /* TestViewController.swift in Sources */,
 				6002E0B02A2C085100345AE9 /* APIManager.swift in Sources */,
 				6002E0BF2A2C085B00345AE9 /* MokeDataForInfoVC.swift in Sources */,
 				6002E0BE2A2C085B00345AE9 /* InfoViewController.swift in Sources */,
 				6002E0BA2A2C085B00345AE9 /* ProfileCell.swift in Sources */,
+				6002E0F32A2CC0F000345AE9 /* ARViewController.swift in Sources */,
 				6002E09F2A2C083900345AE9 /* CircleStrokeSpinner.swift in Sources */,
 				6002E0BB2A2C085B00345AE9 /* InfoCell.swift in Sources */,
 				6002E0D22A2C086400345AE9 /* OrderCell.swift in Sources */,
@@ -358,13 +372,11 @@
 				6002E0E72A2C087500345AE9 /* TabBarController.swift in Sources */,
 				6002E0D32A2C086400345AE9 /* ProductViewCell.swift in Sources */,
 				6002E0D52A2C086400345AE9 /* HeaderSupplementaryView.swift in Sources */,
-				6002E0D82A2C086400345AE9 /* MockDataForProductVC.swift in Sources */,
 				6002E0D42A2C086400345AE9 /* DescriptionCell.swift in Sources */,
 				6002E0892A2C075300345AE9 /* AppDelegate.swift in Sources */,
 				6002E0E42A2C086A00345AE9 /* HomeViewController.swift in Sources */,
 				6002E0D72A2C086400345AE9 /* ProductViewController.swift in Sources */,
 				6002E0BD2A2C085B00345AE9 /* InfoItems.swift in Sources */,
-				6002E08D2A2C075300345AE9 /* Experience.rcproject in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,6 +501,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -501,6 +514,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z6S52L578H;
@@ -519,8 +533,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = personalteam.shaimanovdmitry.CarinCasa;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.carincasa.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -532,6 +547,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z6S52L578H;
@@ -550,8 +566,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = personalteam.shaimanovdmitry.CarinCasa;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.carincasa.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

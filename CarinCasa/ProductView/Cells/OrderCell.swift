@@ -20,6 +20,7 @@ final class OrderCell: UICollectionViewCell {
     func setupLayout() {
         contentView.addSubview(titleLabel)
         contentView.backgroundColor = .black
+        contentView.layer.cornerRadius = 25
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)

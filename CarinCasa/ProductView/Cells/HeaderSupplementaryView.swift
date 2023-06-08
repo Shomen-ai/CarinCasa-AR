@@ -10,7 +10,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
         let label = UILabel()
         label.text = "Header"
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont(name: "FuturaPT-Light", size: 16)
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -37,8 +37,5 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     
     func configureHeader(titleString: String) {
         headerLabel.text = titleString
-        if titleString == "" {
-            backgroundColor = ColorPalette.backgrounColor
-        }
     }
 }

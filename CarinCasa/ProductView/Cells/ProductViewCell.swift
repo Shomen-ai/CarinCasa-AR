@@ -30,7 +30,9 @@ final class ProductViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configureCell(imageName: String) {
+    public func configureCell(imageName: String, name: String) {
         imageView.image = UIImage(named: imageName)
+        self.imageView.sd_setImage(with: URL(string: "http://localhost:3000/data/\(name.replacingOccurrences(of: " ", with: "%20"))/\(imageName).png"),
+                                   placeholderImage: UIImage(named: "placeholder"))
     }
 }
