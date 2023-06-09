@@ -3,6 +3,12 @@ import UIKit
 // MARK: - ProductViewController
 final class ProductViewController: UIViewController {
     
+    var selectedItems: Set<IndexPath> = [] {
+        didSet {
+            print(selectedItems)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -33,7 +39,7 @@ final class ProductViewController: UIViewController {
                                 forCellWithReuseIdentifier: СonfiguratorDescriptionCell.identifier)
         collectionView.register(DescriptionCell.self, forCellWithReuseIdentifier: DescriptionCell.identifier)
         collectionView.register(OrderCell.self, forCellWithReuseIdentifier: OrderCell.identifier)
-        collectionView.register(СonfiguratorCell.self, forCellWithReuseIdentifier: СonfiguratorCell.identifier)
+        collectionView.register(ConfiguratorCell.self, forCellWithReuseIdentifier: ConfiguratorCell.identifier)
         collectionView.register(HeaderSupplementaryView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: HeaderSupplementaryView.identifier)
@@ -53,13 +59,9 @@ final class ProductViewController: UIViewController {
     private var price: [Int] = [0] {
         didSet {
             self.sections[4].setOrderItems( [["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "от \(self.price.reduce(0, +))р"]])
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-//            print(self.price)
         }
     }
-        
+    
     private var name = ""
     public var identifier: String = "" {
         didSet {
@@ -141,14 +143,12 @@ final class ProductViewController: UIViewController {
     }
 }
 
-// MARK: - ConfigureCell Protocol
-extension ProductViewController: ConfiguratorCellDelegate {
-    func didSelectItemsPrice(withTotalSum totalSum: Int, withTag index: Int) {
-        self.price[index] = totalSum
-    }
-    
-    
-}
+//// MARK: - ConfigureCell Protocol
+//extension ProductViewController: ConfiguratorCellDelegate {
+//    func didSelectItemsPrice(withTotalSum totalSum: Int, withTag index: Int) {
+//        self.price[index] = totalSum
+//    }
+//}
 // MARK: - Create NavigationBar
 extension ProductViewController {
     private func setupNavBar() {
@@ -213,6 +213,18 @@ extension ProductViewController {
         return menuBarItem
     }
 }
+
+extension ProductViewController: ConfiguratorCellDelegate {
+    func didTap(item: IndexPath, isSelected: Bool) {
+        if isSelected {
+            selectedItems.insert(item)
+        } else {
+            selectedItems.remove(item)
+        }
+        collectionView.reloadData()
+    }
+}
+
 // MARK: - Create Layout
 extension ProductViewController {
     private func createLayout() -> UICollectionViewCompositionalLayout {
@@ -395,13 +407,15 @@ extension ProductViewController: UICollectionViewDataSource {
                                subTitleString: confDesc[indexPath.row][1])
             return cell
         case .configurator(let configurator):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: СonfiguratorCell.identifier, for: indexPath) as? СonfiguratorCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ConfiguratorCell.identifier, for: indexPath) as? ConfiguratorCell
             else {
                 return UICollectionViewCell()
             }
-            cell.tag = indexPath.row
             cell.configureCell(titleString: configurator[indexPath.row].title,
                                configurations: configurator[indexPath.row])
+            cell.delegate = self
+            cell.tag = indexPath.item
+            cell.selectedItems = selectedItems
             return cell
         case .price(let price):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PriceCell.identifier, for: indexPath) as? PriceCell

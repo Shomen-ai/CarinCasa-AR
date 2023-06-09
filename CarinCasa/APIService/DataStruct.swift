@@ -16,6 +16,10 @@ struct Furniture: Codable {
 struct Configuration: Codable {
     let title: String
     let type, price: [String]
+    
+//    enum CodingKeys: String, CodingKey {
+//            case title, type, price
+//    }
 }
 
 enum APIError: Error {

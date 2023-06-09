@@ -1,12 +1,14 @@
 import UIKit
 
 protocol ConfiguratorCellDelegate: AnyObject {
-    func didSelectItemsPrice(withTotalSum totalSum: Int, withTag index: Int)
+    func didTap(item: IndexPath, isSelected: Bool)
 }
 
-final class СonfiguratorCell: UICollectionViewCell {
+final class ConfiguratorCell: UICollectionViewCell {
     
     weak var delegate: ConfiguratorCellDelegate?
+
+    var selectedItems: Set<IndexPath> = []
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -31,7 +33,6 @@ final class СonfiguratorCell: UICollectionViewCell {
     private var items: Configuration = Configuration(title: "", type: [], price: []) {
         didSet {
             collectionView.reloadData()
-            collectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .top)
             updateTotalSum()
         }
     }
@@ -87,19 +88,16 @@ final class СonfiguratorCell: UICollectionViewCell {
                 totalSum += price
             }
         }
-        delegate?.didSelectItemsPrice(withTotalSum: totalSum, withTag: tag)
-        // Здесь вы можете выполнить необходимые вам действия на основе полученной суммы
-        // Например, обновить интерфейс или передать данные обратно в главный ViewController
     }
 }
 
-extension СonfiguratorCell: UICollectionViewDelegateFlowLayout {
+extension ConfiguratorCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
             return CGSize(width: contentView.frame.width - 10, height: 50)
         }
 }
 
-extension СonfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSource {
+extension ConfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         items.type.count
     }
@@ -110,20 +108,23 @@ extension СonfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSourc
             return UICollectionViewCell()
         }
         cell.configureCell(typeString: items.type[indexPath.item], priceString: items.price[indexPath.item])
+        if selectedItems.contains(where: { $0 == indexPath }) {
+            collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .top)
+        }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        updateTotalSum()
+        delegate?.didTap(item: IndexPath(row: indexPath.row, section: self.tag), isSelected: true)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        updateTotalSum()
+        delegate?.didTap(item: IndexPath(row: indexPath.row, section: self.tag), isSelected: false)
     }
 }
 
+
 final class ConfiguratorSubCell: UICollectionViewCell {
-    
     
     private let title: UILabel = {
         let label = UILabel()
@@ -191,7 +192,97 @@ final class ConfiguratorSubCell: UICollectionViewCell {
         }
     }
 }
+//
+//final class ProductViewController: UIViewController {
+//    
+//    var selectedItems: Set<IndexPath> = []
+//
+//    let collectionView: UICollectionView = {
+//        let collectionView = UICollectionView()
+//        collectionView.delegate = self
+//        collectionView.dataSource = self
+//        return collectionView
+//    }
+//}
+//extension ProductViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+//    func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        1
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        3
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let tag = indexPath.row
+//        let cell = ConfiguratorCell()
+//        cell.delegate = self
+//        cell.tag = tag
+//        cell.selectedItems = selectedItems
+//        return cell
+//    }
+//}
+//
+//extension ProductViewController: ConfiguratorCellDelegate {
+//    func didTap(item: IndexPath, isSelected: Bool) {
+//        if isSelected {
+//            selectedItems.insert(item)
+//        } else {
+//            selectedItems.remove(item)
+//        }
+//    }
+//}
+//
 
 
-
-
+//protocol ConfiguratorCellDelegate: AnyObject {
+//    func didTap(item: IndexPath, isSelected: Bool)
+//}
+//
+//final class ConfiguratorCell: UICollectionViewCell {
+//
+//    weak var delegate: ConfiguratorCellDelegate?
+//
+//    var selectedItems: Set<IndexPath> = []
+//
+//    let collectionView: UICollectionView = {
+//        let collectionView = UICollectionView()
+//        collectionView.delegate = self
+//        collectionView.dataSource = self
+//        return collectionView
+//    }
+//}
+//
+//extension ConfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSource {
+//    func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        1
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        3
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = ConfiguratorSubCell()
+//        cell.isSelected = selectedItems.contains(where: { $0 == indexPath })
+//        return cell
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        delegate?.didTap(item: IndexPath(row: indexPath.row, section: self.tag), isSelected: true)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+//        delegate?.didTap(item: IndexPath(row: indexPath.row, section: self.tag), isSelected: false)
+//    }
+//}
+//
+//
+//
+//final class ConfiguratorSubCell: UICollectionViewCell {
+//    override var isSelected: Bool {
+//        didSet {
+//
+//        }
+//    }
+//}

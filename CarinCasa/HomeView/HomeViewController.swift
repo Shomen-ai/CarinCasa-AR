@@ -10,17 +10,7 @@ final class HomeViewController: UIViewController {
         view.addSubview(loadingView)
         loadingView.startAnimating()
         collectionView.isHidden = true
-        DispatchQueue.main.async {
-            APIManager.shared.fetchData { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let product):
-                    self.sectionItems = product
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
+        
         setupNavBar()
         navigationItem.titleView = createCustomTitleView(title: "CARIN CASA", subtitle: "КАТАЛОГ")
         navigationItem.rightBarButtonItems = [
