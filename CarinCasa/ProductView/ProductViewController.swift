@@ -14,8 +14,8 @@ final class ProductViewController: UIViewController {
         view.backgroundColor = .white
 
         view.addSubview(loadingView)
-        loadingView.startAnimating()
-        collectionView.isHidden = true
+//        loadingView.startAnimating()
+//        collectionView.isHidden = true
         
         setupNavBar()
         navigationItem.rightBarButtonItems = [createCustomButton(titleString: "3D",
@@ -56,67 +56,69 @@ final class ProductViewController: UIViewController {
         return view
     }()
     
-    private var price: [Int] = [0] {
-        didSet {
-            self.sections[4].setOrderItems( [["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "от \(self.price.reduce(0, +))р"]])
-        }
-    }
+//    private var price: [Int] = [0] {
+//        didSet {
+//            self.sections[4].setOrderItems( [["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "от \(self.price.reduce(0, +))р"]])
+//        }
+//    }
     
     private var name = ""
-    public var identifier: String = "" {
-        didSet {
-            APIManager.shared.findOne(id: self.identifier, completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let furniture):
-                    let productSection: ProductSection = {
-                        .product(furniture.images)
-                    }()
-                    self.sections.append(productSection)
-                    let descriptionSection: ProductSection = {
-                        .description([furniture.description])
-                    }()
-                    self.sections.append(descriptionSection)
-                    let configuratorDescription: ProductSection = {
-                        .configuratorDescription([["КОНФИГУРАТОР", "Воспользуйтесь конфигуратором, чтобы узнать предварительную стоимость изделия"]])
-                    }()
-                    self.sections.append(configuratorDescription)
-                    let configurator: ProductSection = {
-                        .configurator(furniture.configurations)
-                    }()
-                    self.sections.append(configurator)
-                    let price: ProductSection = {
-                        .price([["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "от \(self.price.reduce(0, +))р"]])
-                    }()
-                    self.sections.append(price)
-                    let order: ProductSection = {
-                        .order(["ОСТАВИТЬ ЗАЯВКУ"])
-                    }()
-                    self.sections.append(order)
-                    self.name = furniture.name
-                    self.price = Array(repeating: 0, count: furniture.configurations.count)
-                    DispatchQueue.main.async {
-                        self.navigationItem.titleView = self.createCustomTitleView(title: furniture.name,
-                                                                            subtitle: furniture.type)
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            })
-        }
-    }
+//    public var identifier: String = "" {
+//        didSet {
+//            APIManager.shared.findOne(id: self.identifier, completion: { [weak self] result in
+//                guard let self = self else { return }
+//                switch result {
+//                case .success(let furniture):
+//                    let productSection: ProductSection = {
+//                        .product(furniture.images)
+//                    }()
+//                    self.sections.append(productSection)
+//                    let descriptionSection: ProductSection = {
+//                        .description([furniture.description])
+//                    }()
+//                    self.sections.append(descriptionSection)
+//                    let configuratorDescription: ProductSection = {
+//                        .configuratorDescription([["КОНФИГУРАТОР", "Воспользуйтесь конфигуратором, чтобы узнать предварительную стоимость изделия"]])
+//                    }()
+//                    self.sections.append(configuratorDescription)
+//                    let configurator: ProductSection = {
+//                        .configurator(furniture.configurations)
+//                    }()
+//                    self.sections.append(configurator)
+//                    let price: ProductSection = {
+//                        .price([["ПРЕДВАРИТЕЛЬНАЯ\nСТОИМОСТЬ", "от \(self.price.reduce(0, +))р"]])
+//                    }()
+//                    self.sections.append(price)
+//                    let order: ProductSection = {
+//                        .order(["ОСТАВИТЬ ЗАЯВКУ"])
+//                    }()
+//                    self.sections.append(order)
+//                    self.name = furniture.name
+//                    self.price = Array(repeating: 0, count: furniture.configurations.count)
+//                    DispatchQueue.main.async {
+//                        self.navigationItem.titleView = self.createCustomTitleView(title: furniture.name,
+//                                                                            subtitle: furniture.type)
+//                    }
+//                case .failure(let error):
+//                    print(error)
+//                }
+//            })
+//        }
+//    }
     
-    private var sections: [ProductSection] = [] {
-        didSet {
-            if self.sections.count == 6 {
-                DispatchQueue.main.async {
-                    self.loadingView.stopAnimating()
-                    self.collectionView.reloadData()
-                    self.collectionView.isHidden = false
-                }
-            }
-        }
-    }
+//    private var sections: [ProductSection] = [] {
+//        didSet {
+//            if self.sections.count == 6 {
+//                DispatchQueue.main.async {
+//                    self.loadingView.stopAnimating()
+//                    self.collectionView.reloadData()
+//                    self.collectionView.isHidden = false
+//                }
+//            }
+//        }
+//    }
+    
+    private let sections = MockDataForProductViewController.shared.pageData
     
     private func setDelegate() {
         collectionView.delegate = self
@@ -249,10 +251,20 @@ extension ProductViewController {
         }
     }
     
-    private func findHeight(conf: [Configuration]) -> [Double] {
+//    private func findHeight(conf: [Configuration]) -> [Double] {
+//        var result: [Double] = []
+//        for i in 0..<conf.count {
+//            let collectionHeight = 50.0 * Double(conf[i].type.count) + 10.0 * Double((conf[i].type.count - 1))
+//            let labelHeightAndMargins = 37.0
+//            result.append(collectionHeight + labelHeightAndMargins)
+//        }
+//        return result
+//    }
+    
+    private func findHeight(conf: [ProductItem]) -> [Double] {
         var result: [Double] = []
         for i in 0..<conf.count {
-            let collectionHeight = 50.0 * Double(conf[i].type.count) + 10.0 * Double((conf[i].type.count - 1))
+            let collectionHeight = 50.0 * Double(conf[i].configureItems.count) + 10.0 * Double((conf[i].configureItems.count - 1))
             let labelHeightAndMargins = 37.0
             result.append(collectionHeight + labelHeightAndMargins)
         }
@@ -383,7 +395,8 @@ extension ProductViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(imageName: product[indexPath.row], name: name)
+//            cell.configureCell(imageName: product[indexPath.row], name: name)
+            cell.configureCell(imageName: product[indexPath.row].image, name: name)
             return cell
             
         case .description(let description):
@@ -391,8 +404,8 @@ extension ProductViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(titleString: description[indexPath.row])
-            
+//            cell.configureCell(titleString: description[indexPath.row])
+            cell.configureCell(titleString: description[indexPath.row].title2)
             return cell
         
         case .configuratorDescription(let confDesc):
@@ -403,16 +416,20 @@ extension ProductViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
-            cell.configureCell(titleString: confDesc[indexPath.row][0],
-                               subTitleString: confDesc[indexPath.row][1])
+//            cell.configureCell(titleString: confDesc[indexPath.row][0],
+//                               subTitleString: confDesc[indexPath.row][1])
+            cell.configureCell(titleString: confDesc[indexPath.row].title,
+                               subTitleString: confDesc[indexPath.row].subtitle)
             return cell
         case .configurator(let configurator):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ConfiguratorCell.identifier, for: indexPath) as? ConfiguratorCell
             else {
                 return UICollectionViewCell()
             }
+//            cell.configureCell(titleString: configurator[indexPath.row].title,
+//                               configurations: configurator[indexPath.row])
             cell.configureCell(titleString: configurator[indexPath.row].title,
-                               configurations: configurator[indexPath.row])
+                               configurations: configurator[indexPath.row].configureItems)
             cell.delegate = self
             cell.tag = indexPath.item
             cell.selectedItems = selectedItems
@@ -422,15 +439,18 @@ extension ProductViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(titleString: price[indexPath.row][0],
-                               priceString: price[indexPath.row][1])
+//            cell.configureCell(titleString: price[indexPath.row][0],
+//                               priceString: price[indexPath.row][1])
+            cell.configureCell(titleString: price[indexPath.row].title,
+                                           priceString: price[indexPath.row].price)
             return cell
         case .order(let order):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OrderCell.identifier, for: indexPath) as? OrderCell
             else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(titleString: order[indexPath.row])
+//            cell.configureCell(titleString: order[indexPath.row])
+            cell.configureCell(titleString: order[indexPath.row].title)
             return cell
         }
     }

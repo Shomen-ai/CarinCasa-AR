@@ -30,12 +30,18 @@ final class ConfiguratorCell: UICollectionViewCell {
         return view
     }()
     
-    private var items: Configuration = Configuration(title: "", type: [], price: []) {
-        didSet {
-            collectionView.reloadData()
-            updateTotalSum()
+//    private var items: Configuration = Configuration(title: "", type: [], price: []) {
+//        didSet {
+//            collectionView.reloadData()
+//            updateTotalSum()
+//        }
+//    }
+    
+    private var items: [ConfigureItems] = [] {
+            didSet {
+                collectionView.reloadData()
+            }
         }
-    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -72,23 +78,27 @@ final class ConfiguratorCell: UICollectionViewCell {
         collectionView.collectionViewLayout = UICollectionViewFlowLayout()
     }
     
-    public func configureCell(titleString: String, configurations: Configuration) {
-        titleLabel.text = titleString
-        items = configurations
-    }
+//    public func configureCell(titleString: String, configurations: Configuration) {
+//        titleLabel.text = titleString
+//        items = configurations
+//    }
     
+    public func configureCell(titleString: String, configurations: [ConfigureItems]) {
+            titleLabel.text = titleString
+            items = configurations
+        }
     private var totalSum: Int = 0
     
-    private func updateTotalSum() {
-        totalSum = 0
-        
-        for indexPath in collectionView.indexPathsForSelectedItems ?? [] {
-            let priceString = items.price[indexPath.item]
-            if let price = Int(priceString) {
-                totalSum += price
-            }
-        }
-    }
+//    private func updateTotalSum() {
+//        totalSum = 0
+//
+//        for indexPath in collectionView.indexPathsForSelectedItems ?? [] {
+//            let priceString = items.price[indexPath.item]
+//            if let price = Int(priceString) {
+//                totalSum += price
+//            }
+//        }
+//    }
 }
 
 extension ConfiguratorCell: UICollectionViewDelegateFlowLayout {
@@ -99,7 +109,8 @@ extension ConfiguratorCell: UICollectionViewDelegateFlowLayout {
 
 extension ConfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        items.type.count
+//        items.type.count
+        items.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -107,7 +118,8 @@ extension ConfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSource
         else {
             return UICollectionViewCell()
         }
-        cell.configureCell(typeString: items.type[indexPath.item], priceString: items.price[indexPath.item])
+//        cell.configureCell(typeString: items.type[indexPath.item], priceString: items.price[indexPath.item])
+        cell.configureCell(typeString: items[indexPath.item].title, priceString: items[indexPath.item].price)
         if selectedItems.contains(where: { $0 == indexPath }) {
             collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .top)
         }

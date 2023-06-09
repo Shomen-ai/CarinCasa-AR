@@ -8,8 +8,8 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         view.addSubview(loadingView)
-        loadingView.startAnimating()
-        collectionView.isHidden = true
+//        loadingView.startAnimating()
+//        collectionView.isHidden = true
         
         setupNavBar()
         navigationItem.titleView = createCustomTitleView(title: "CARIN CASA", subtitle: "КАТАЛОГ")
@@ -49,26 +49,27 @@ final class HomeViewController: UIViewController {
         return view
     }()
     
-    private var sectionItems: Product? = nil {
-        didSet {
-            guard let sectionItems = sectionItems else { return }
-            let item: HomeSection = {
-                .products(sectionItems.furniture)
-            }()
-            self.sections.append(item)
-        }
-    }
+//    private var sectionItems: Product? = nil {
+//        didSet {
+//            guard let sectionItems = sectionItems else { return }
+//            let item: HomeSection = {
+//                .products(sectionItems.furniture)
+//            }()
+//            self.sections.append(item)
+//        }
+//    }
+//
+//    private var sections: [HomeSection] = [] {
+//        didSet {
+//            DispatchQueue.main.async {
+//                self.loadingView.stopAnimating()
+//                self.collectionView.reloadData()
+//                self.collectionView.isHidden = false
+//            }
+//        }
+//    }
     
-    private var sections: [HomeSection] = [] {
-        didSet {
-            DispatchQueue.main.async {
-                self.loadingView.stopAnimating()
-                self.collectionView.reloadData()
-                self.collectionView.isHidden = false
-            }
-        }
-    }
-
+    private let sections = MockDataForHomeViewController.shared.pageData
     private func setDelegate() {
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -84,83 +85,85 @@ final class HomeViewController: UIViewController {
         ])
     }
     
-    @objc func showMenu() {
-        let alertController = UIAlertController(title: "Категория", message: nil, preferredStyle: .actionSheet)
-        
-        let action1 = UIAlertAction(title: "Все изделия", style: .default) { _ in
-            guard let sectionItems = self.sectionItems else { return }
-            let item: HomeSection = {
-                .products(sectionItems.furniture)
-            }()
-            self.sections = []
-            self.sections.append(item)
-        }
-        alertController.addAction(action1)
-        action1.setValue(UIColor.black, forKey: "titleTextColor")
-        
-        let action2 = UIAlertAction(title: "Столы", style: .default) { _ in
-            guard let sectionItems = self.sectionItems else { return }
-            let item: HomeSection = {
-                .products(sectionItems.furniture.filter {$0.type == "Стол"})
-            }()
-            self.sections = []
-            self.sections.append(item)
-        }
-        alertController.addAction(action2)
-        action2.setValue(UIColor.black, forKey: "titleTextColor")
-        
-        let action3 = UIAlertAction(title: "Консоли и зеркала", style: .default) { _ in
-            guard let sectionItems = self.sectionItems else { return }
-            let item: HomeSection = {
-                .products(sectionItems.furniture.filter {$0.type == "Консоли и зеркала"})
-            }()
-            self.sections = []
-            self.sections.append(item)
-        }
-        alertController.addAction(action3)
-        action3.setValue(UIColor.black, forKey: "titleTextColor")
-        
-        let action4 = UIAlertAction(title: "Стулья", style: .default) { _ in
-            guard let sectionItems = self.sectionItems else { return }
-            let item: HomeSection = {
-                .products(sectionItems.furniture.filter {$0.type == "Стулья"})
-            }()
-            self.sections = []
-            self.sections.append(item)
-        }
-        alertController.addAction(action4)
-        action4.setValue(UIColor.black, forKey: "titleTextColor")
-        
-        let action5 = UIAlertAction(title: "Журнальные столики", style: .default) { _ in
-            guard let sectionItems = self.sectionItems else { return }
-            let item: HomeSection = {
-                .products(sectionItems.furniture.filter {$0.type == "Журнальные столики"})
-            }()
-            self.sections = []
-            self.sections.append(item)
-        }
-        alertController.addAction(action5)
-        action5.setValue(UIColor.black, forKey: "titleTextColor")
-        
-        let action6 = UIAlertAction(title: "Комоды", style: .default) { _ in
-            guard let sectionItems = self.sectionItems else { return }
-            let item: HomeSection = {
-                .products(sectionItems.furniture.filter {$0.type == "Комоды"})
-            }()
-            self.sections = []
-            self.sections.append(item)
-        }
-        alertController.addAction(action6)
-        action6.setValue(UIColor.black, forKey: "titleTextColor")
-        
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
-            // Обработка выбора отмены
-        }
-        alertController.addAction(cancelAction)
-        cancelAction.setValue(UIColor.black, forKey: "titleTextColor")
-        
-        present(alertController, animated: true, completion: nil)
-    }
+//    @objc func showMenu() {
+//        let alertController = UIAlertController(title: "Категория", message: nil, preferredStyle: .actionSheet)
+//
+//        let action1 = UIAlertAction(title: "Все изделия", style: .default) { _ in
+//            guard let sectionItems = self.sectionItems else { return }
+//            let item: HomeSection = {
+//                .products(sectionItems.furniture)
+//            }()
+//            self.sections = []
+//            self.sections.append(item)
+//        }
+//        alertController.addAction(action1)
+//        action1.setValue(UIColor.black, forKey: "titleTextColor")
+//
+//        let action2 = UIAlertAction(title: "Столы", style: .default) { _ in
+//            guard let sectionItems = self.sectionItems else { return }
+//            let item: HomeSection = {
+//                .products(sectionItems.furniture.filter {$0.type == "Стол"})
+//            }()
+//            self.sections = []
+//            self.sections.append(item)
+//        }
+//        alertController.addAction(action2)
+//        action2.setValue(UIColor.black, forKey: "titleTextColor")
+//
+//        let action3 = UIAlertAction(title: "Консоли и зеркала", style: .default) { _ in
+//            guard let sectionItems = self.sectionItems else { return }
+//            let item: HomeSection = {
+//                .products(sectionItems.furniture.filter {$0.type == "Консоли и зеркала"})
+//            }()
+//            self.sections = []
+//            self.sections.append(item)
+//        }
+//        alertController.addAction(action3)
+//        action3.setValue(UIColor.black, forKey: "titleTextColor")
+//
+//        let action4 = UIAlertAction(title: "Стулья", style: .default) { _ in
+//            guard let sectionItems = self.sectionItems else { return }
+//            let item: HomeSection = {
+//                .products(sectionItems.furniture.filter {$0.type == "Стулья"})
+//            }()
+//            self.sections = []
+//            self.sections.append(item)
+//        }
+//        alertController.addAction(action4)
+//        action4.setValue(UIColor.black, forKey: "titleTextColor")
+//
+//        let action5 = UIAlertAction(title: "Журнальные столики", style: .default) { _ in
+//            guard let sectionItems = self.sectionItems else { return }
+//            let item: HomeSection = {
+//                .products(sectionItems.furniture.filter {$0.type == "Журнальные столики"})
+//            }()
+//            self.sections = []
+//            self.sections.append(item)
+//        }
+//        alertController.addAction(action5)
+//        action5.setValue(UIColor.black, forKey: "titleTextColor")
+//
+//        let action6 = UIAlertAction(title: "Комоды", style: .default) { _ in
+//            guard let sectionItems = self.sectionItems else { return }
+//            let item: HomeSection = {
+//                .products(sectionItems.furniture.filter {$0.type == "Комоды"})
+//            }()
+//            self.sections = []
+//            self.sections.append(item)
+//        }
+//        alertController.addAction(action6)
+//        action6.setValue(UIColor.black, forKey: "titleTextColor")
+//
+//        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
+//            // Обработка выбора отмены
+//        }
+//        alertController.addAction(cancelAction)
+//        cancelAction.setValue(UIColor.black, forKey: "titleTextColor")
+//
+//        present(alertController, animated: true, completion: nil)
+//    }
+    
+    @objc func showMenu() {}
     
     private var buttonClicked: Bool = false
     @objc func changeGrid(_ sender: UIButton!) {
@@ -337,14 +340,17 @@ extension HomeViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
-            if let imageURL = URL(string: "http://localhost:3000/image/\(products[indexPath.row].collectionImage).png") {
-                cell.imageView.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
-                cell.configureCell(titleString: products[indexPath.row].name)
-                return cell
-            } else {
-                cell.configureCell(titleString: products[indexPath.row].name)
-                return cell
-            }
+//            if let imageURL = URL(string: "http://localhost:3000/image/\(products[indexPath.row].collectionImage).png") {
+//                cell.imageView.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
+//                cell.configureCell(titleString: products[indexPath.row].name)
+//                return cell
+//            } else {
+//                cell.configureCell(titleString: products[indexPath.row].name)
+//                return cell
+//            }
+            cell.imageView.image = UIImage(named: "placeholder")
+            cell.configureCell(titleString: products[indexPath.row].title)
+            return cell
         }
     }
 
@@ -370,7 +376,7 @@ extension HomeViewController: UICollectionViewDataSource {
         case .products(let product):
             let newVC = ProductViewController()
             newVC.hidesBottomBarWhenPushed = true
-            newVC.identifier = product[indexPath.item].id
+//            newVC.identifier = product[indexPath.item].id
             self.navigationController?.pushViewController(newVC, animated: true)
         }
     }
