@@ -1,7 +1,7 @@
 enum HomeSection {
-    case products([HomeItem])
+    case products([Furniture])
     
-    var items: [HomeItem] {
+    var items: [Furniture] {
         switch self {
             case .products(let items):
             return items

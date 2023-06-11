@@ -238,7 +238,7 @@ extension InfoViewController: UICollectionViewDataSource {
             else {
                 return UICollectionReusableView()
             }
-            header.configureHeader(titleString: sections[indexPath.section].title)
+            header.configure(title: sections[indexPath.section].title)
             return header
         default:
             return UICollectionReusableView()
@@ -248,14 +248,11 @@ extension InfoViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch sections[indexPath.section] {
         case .profile(_):
-            let newVC = ProductViewController()
-            self.navigationController?.pushViewController(newVC, animated: true)
+            print("go to profile")
         case .order(_):
-            let newVC = ProductViewController()
-            self.navigationController?.pushViewController(newVC, animated: true)
+            print("go to order")
         case .info(_):
-            let newVC = ProductViewController()
-            self.navigationController?.pushViewController(newVC, animated: true)
+            print("go to info")
         }
             
     }

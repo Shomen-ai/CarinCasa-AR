@@ -35,7 +35,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
         ])
     }
     
-    func configureHeader(titleString: String) {
-        headerLabel.text = titleString
+    func configure(title: String) {
+        headerLabel.text = title
     }
 }

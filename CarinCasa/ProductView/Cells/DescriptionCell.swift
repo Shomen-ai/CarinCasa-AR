@@ -1,6 +1,8 @@
 import UIKit
 
 final class DescriptionCell: UICollectionViewCell {
+
+    // MARK: - UI Components
     
     private let titleLabel: UILabel = {
         let view = UILabel()
@@ -12,14 +14,25 @@ final class DescriptionCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
+    // MARK: - Properties
+
     public var optimalHeight: Double = 0.0
-    
+
+    // MARK: - Lifecycle
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }
-    
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Methods
+
     func setupLayout() {
         contentView.addSubview(titleLabel)
 //        contentView.backgroundColor = .red
@@ -30,40 +43,30 @@ final class DescriptionCell: UICollectionViewCell {
             titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
         ])
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func configureCell(titleString: [String]) {
-        if let firstFont = UIFont(name: "FuturaPT-Medium", size: 18), let secondFont = UIFont(name: "FuturaPT-Light", size: 16) {
-            let firstAttributes: [NSAttributedString.Key: Any] = [
-                NSAttributedString.Key.font: firstFont
-            ]
-            
-            let secondAttributes: [NSAttributedString.Key: Any] = [
-                NSAttributedString.Key.font: secondFont
-            ]
-            
+
+    func configure(titles: [String]) {
+        if let firstFont = UIFont(name: "FuturaPT-Medium", size: 18),
+           let secondFont = UIFont(name: "FuturaPT-Light", size: 16)
+        {
+            let firstAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: firstFont]
+            let secondAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: secondFont]
             let attributedString = NSMutableAttributedString()
-                    
-                    for (index, string) in titleString.enumerated() {
-                        // Применение соответствующих атрибутов к каждой строке
-                        let attributes = (index == 0) ? firstAttributes : secondAttributes
-                        let attributedSubstring = NSAttributedString(string: string, attributes: attributes)
-                        
-                        attributedString.append(attributedSubstring)
-                        
-                        // Вставка \n\n между строками, кроме последней
-                        if index < titleString.count - 1 {
-                            attributedString.append(NSAttributedString(string: "\n\n"))
-                        }
-                    }
-            
+            for (index, string) in titles.enumerated() {
+                // Применение соответствующих атрибутов к каждой строке
+                let attributes = (index == 0) ? firstAttributes : secondAttributes
+                let attributedSubstring = NSAttributedString(string: string, attributes: attributes)
+                
+                attributedString.append(attributedSubstring)
+                
+                // Вставка \n\n между строками, кроме последней
+                if index < titles.count - 1 {
+                    attributedString.append(NSAttributedString(string: "\n\n"))
+                }
+            }
             titleLabel.attributedText = attributedString
         } else {
             titleLabel.font = UIFont(name: "FuturaPT-Light", size: 16)
-            titleLabel.text = titleString.reduce("") { (result, string) -> String in
+            titleLabel.text = titles.reduce("") { (result, string) -> String in
                 if result.isEmpty {
                     return string
                 } else {
@@ -73,11 +76,5 @@ final class DescriptionCell: UICollectionViewCell {
         }
         optimalHeight = titleLabel.frame.height + 20
     }
-    
-//    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-//        let targetSize = CGSize(width: layoutAttributes.frame.width, height: UIView.layoutFittingCompressedSize.height)
-//        layoutAttributes.frame.size = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
-//        return layoutAttributes
-//    }
 }
 

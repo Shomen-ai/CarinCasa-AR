@@ -1,7 +1,9 @@
 import UIKit
 
 final class OrderCell: UICollectionViewCell {
-        
+
+    // MARK: - UI Components
+
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.textColor = .white
@@ -10,13 +12,21 @@ final class OrderCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    
+
+    // MARK: - Lifecycle
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }
-    
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Methods
+
     func setupLayout() {
         contentView.addSubview(titleLabel)
         contentView.backgroundColor = .black
@@ -26,12 +36,8 @@ final class OrderCell: UICollectionViewCell {
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func configureCell(titleString: String) {
-        titleLabel.text = titleString
+
+    func configure(title: String) {
+        titleLabel.text = title
     }
 }

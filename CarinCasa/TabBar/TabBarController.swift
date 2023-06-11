@@ -12,15 +12,12 @@ final class MainTabBarController: UITabBarController {
     private func generateTabBar() {
         viewControllers = [
             generateVC(
-                viewController: HomeViewController(),
+                viewController: HomeViewController(viewModel: HomeViewModel()),
                 image: UIImage(systemName: "house")
             ),
             generateVC(
                 viewController: InfoViewController(),
                 image: UIImage(systemName: "person.crop.circle")
-            ),
-            generateVC(viewController: ARViewController(),
-                       image: UIImage(systemName: "questionmark.diamond")
             )
         ]
     }

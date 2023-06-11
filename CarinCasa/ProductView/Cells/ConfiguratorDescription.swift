@@ -1,7 +1,9 @@
 import UIKit
 
 final class СonfiguratorDescriptionCell: UICollectionViewCell {
-    
+
+    // MARK: - UI Components
+
     private let configurator: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -12,7 +14,7 @@ final class СonfiguratorDescriptionCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let configuratorDescription: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -23,12 +25,21 @@ final class СonfiguratorDescriptionCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
+    // MARK: - Lifecycle
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }
-    
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Methods
+
     func setupLayout() {
         contentView.addSubview(configurator)
         contentView.addSubview(configuratorDescription)
@@ -45,13 +56,9 @@ final class СonfiguratorDescriptionCell: UICollectionViewCell {
             configuratorDescription.widthAnchor.constraint(equalToConstant: frame.width - 10)
         ])
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func configureCell(titleString: String, subTitleString: String) {
-        configurator.text = titleString
-        configuratorDescription.text = subTitleString
+
+    func configure(title: String, subtitle: String) {
+        configurator.text = title
+        configuratorDescription.text = subtitle
     }
 }

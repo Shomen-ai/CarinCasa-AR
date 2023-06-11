@@ -3,42 +3,20 @@ import SDWebImage
 
 // MARK: - HomeViewController
 final class HomeViewController: UIViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        view.addSubview(loadingView)
-//        loadingView.startAnimating()
-//        collectionView.isHidden = true
-        
-        setupNavBar()
-        navigationItem.titleView = createCustomTitleView(title: "CARIN CASA", subtitle: "КАТАЛОГ")
-        navigationItem.rightBarButtonItems = [
-            createCustomButton(imageName: "slider.horizontal.3",
-                               selector: #selector(showMenu)),
-            createCustomButton(imageName: "square.grid.2x2",
-                               selector: #selector(changeGrid))
-            ]
-        setupConstraints()
-        setDelegate()
-        collectionView.collectionViewLayout = createLayout()
-        
-    }
-    
+
+    // MARK: - UI Components
+
     private let collectionView: UICollectionView = {
-        let collectionViewLayout = UICollectionViewLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         collectionView.backgroundColor = .white
         collectionView.bounces = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(ProductsCell.self, forCellWithReuseIdentifier: ProductsCell.identifier)
-        collectionView.register(HeaderSupplementaryView.self,
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: HeaderSupplementaryView.identifier)
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.register(ProductsCell.self)
+        collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader)
         return collectionView
     }()
-    
+
     private lazy var loadingView: ZXLoadingView = {
         let rect:CGRect = CGRect.init(x: self.view.center.x, y: self.view.center.y, width: 100, height: 100)
         let view:ZXLoadingView = ZXLoadingView.init(frame:rect)
@@ -48,28 +26,70 @@ final class HomeViewController: UIViewController {
         view.lineWidth = 2.0
         return view
     }()
+
+    private lazy var showMenuBarButtonItem = createCustomButton(imageName: "slider.horizontal.3",
+                                                                selector: #selector(showMenu))
+
+    private lazy var changeGridBarButtonItem = createCustomButton(imageName: "square.grid.2x2",
+                                                                  selector: #selector(changeGrid))
+
+    // MARK: - Properties
+
+    private var changeGridButtonClicked: Bool = false
+
+    private let viewModel: HomeViewModelProtocol
+
+    // MARK: - Lifecycle
+
+    init(viewModel: HomeViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-//    private var sectionItems: Product? = nil {
-//        didSet {
-//            guard let sectionItems = sectionItems else { return }
-//            let item: HomeSection = {
-//                .products(sectionItems.furniture)
-//            }()
-//            self.sections.append(item)
-//        }
-//    }
-//
-//    private var sections: [HomeSection] = [] {
-//        didSet {
-//            DispatchQueue.main.async {
-//                self.loadingView.stopAnimating()
-//                self.collectionView.reloadData()
-//                self.collectionView.isHidden = false
-//            }
-//        }
-//    }
-    
-    private let sections = MockDataForHomeViewController.shared.pageData
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+
+        view.addSubview(loadingView)
+        setLoading(true)
+
+        setupNavBar()
+        navigationItem.titleView = createCustomTitleView(title: "CARIN CASA", subtitle: "КАТАЛОГ")
+        navigationItem.rightBarButtonItems = [
+            showMenuBarButtonItem,
+            changeGridBarButtonItem,
+        ]
+        setupConstraints()
+        setDelegate()
+        collectionView.collectionViewLayout = createLayout()
+
+        viewModel.sections.add(subscriber: "viewModel.sections") { [weak self] old, new in
+            guard let self = self else {
+                return
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.setLoading(false)
+                self?.collectionView.reloadData()
+            }
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.getData()
+    }
+
+    deinit {
+        viewModel.sections.remove(subscriber: "viewModel.sections")
+    }
+
+    // MARK: - Methods
+
     private func setDelegate() {
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -84,118 +104,94 @@ final class HomeViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
+
+    private func setLoading(_ isLoading: Bool) {
+        if isLoading {
+            loadingView.startAnimating()
+            collectionView.isHidden = true
+        } else {
+            loadingView.stopAnimating()
+            collectionView.isHidden = false
+        }
+    }
     
-//    @objc func showMenu() {
-//        let alertController = UIAlertController(title: "Категория", message: nil, preferredStyle: .actionSheet)
-//
-//        let action1 = UIAlertAction(title: "Все изделия", style: .default) { _ in
-//            guard let sectionItems = self.sectionItems else { return }
-//            let item: HomeSection = {
-//                .products(sectionItems.furniture)
-//            }()
-//            self.sections = []
-//            self.sections.append(item)
-//        }
-//        alertController.addAction(action1)
-//        action1.setValue(UIColor.black, forKey: "titleTextColor")
-//
-//        let action2 = UIAlertAction(title: "Столы", style: .default) { _ in
-//            guard let sectionItems = self.sectionItems else { return }
-//            let item: HomeSection = {
-//                .products(sectionItems.furniture.filter {$0.type == "Стол"})
-//            }()
-//            self.sections = []
-//            self.sections.append(item)
-//        }
-//        alertController.addAction(action2)
-//        action2.setValue(UIColor.black, forKey: "titleTextColor")
-//
-//        let action3 = UIAlertAction(title: "Консоли и зеркала", style: .default) { _ in
-//            guard let sectionItems = self.sectionItems else { return }
-//            let item: HomeSection = {
-//                .products(sectionItems.furniture.filter {$0.type == "Консоли и зеркала"})
-//            }()
-//            self.sections = []
-//            self.sections.append(item)
-//        }
-//        alertController.addAction(action3)
-//        action3.setValue(UIColor.black, forKey: "titleTextColor")
-//
-//        let action4 = UIAlertAction(title: "Стулья", style: .default) { _ in
-//            guard let sectionItems = self.sectionItems else { return }
-//            let item: HomeSection = {
-//                .products(sectionItems.furniture.filter {$0.type == "Стулья"})
-//            }()
-//            self.sections = []
-//            self.sections.append(item)
-//        }
-//        alertController.addAction(action4)
-//        action4.setValue(UIColor.black, forKey: "titleTextColor")
-//
-//        let action5 = UIAlertAction(title: "Журнальные столики", style: .default) { _ in
-//            guard let sectionItems = self.sectionItems else { return }
-//            let item: HomeSection = {
-//                .products(sectionItems.furniture.filter {$0.type == "Журнальные столики"})
-//            }()
-//            self.sections = []
-//            self.sections.append(item)
-//        }
-//        alertController.addAction(action5)
-//        action5.setValue(UIColor.black, forKey: "titleTextColor")
-//
-//        let action6 = UIAlertAction(title: "Комоды", style: .default) { _ in
-//            guard let sectionItems = self.sectionItems else { return }
-//            let item: HomeSection = {
-//                .products(sectionItems.furniture.filter {$0.type == "Комоды"})
-//            }()
-//            self.sections = []
-//            self.sections.append(item)
-//        }
-//        alertController.addAction(action6)
-//        action6.setValue(UIColor.black, forKey: "titleTextColor")
-//
-//        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
-//            // Обработка выбора отмены
-//        }
-//        alertController.addAction(cancelAction)
-//        cancelAction.setValue(UIColor.black, forKey: "titleTextColor")
-//
-//        present(alertController, animated: true, completion: nil)
-//    }
-    
-    @objc func showMenu() {}
-    
-    private var buttonClicked: Bool = false
-    @objc func changeGrid(_ sender: UIButton!) {
-        if buttonClicked == false {
+    @objc private func showMenu() {
+        let alertController = UIAlertController(title: "Категория", message: nil, preferredStyle: .actionSheet)
+        let actions: [UIAlertAction] = [
+            UIAlertAction(title: "Все изделия", style: .default) { [weak self] _ in
+                guard let self = self, let furniture = self.viewModel.furniture else { return }
+                self.viewModel.sections.update(with: [.products(furniture)])
+            },
+            UIAlertAction(title: "Столы", style: .default) { [weak self] _ in
+                guard let self = self, let furniture = self.viewModel.furniture else { return }
+                self.viewModel.sections.update(with: [.products(furniture.filter {$0.type == "Стол"})])
+            },
+            UIAlertAction(title: "Консоли и зеркала", style: .default) { [weak self] _ in
+                guard let self = self, let furniture = self.viewModel.furniture else { return }
+                self.viewModel.sections.update(with: [.products(furniture.filter {$0.type == "Консоли и зеркала"})])
+            },
+            UIAlertAction(title: "Стулья", style: .default) { [weak self] _ in
+                guard let self = self, let furniture = self.viewModel.furniture else { return }
+                self.viewModel.sections.update(with: [.products(furniture.filter {$0.type == "Стулья"})])
+            },
+            UIAlertAction(title: "Журнальные столики", style: .default) { [weak self] _ in
+                guard let self = self, let furniture = self.viewModel.furniture else { return }
+                self.viewModel.sections.update(with: [.products(furniture.filter {$0.type == "Журнальные столики"})])
+            },
+            UIAlertAction(title: "Комоды", style: .default) { [weak self] _ in
+                guard let self = self, let furniture = self.viewModel.furniture else { return }
+                self.viewModel.sections.update(with: [.products(furniture.filter {$0.type == "Комоды"})])
+            },
+            UIAlertAction(title: "Отмена", style: .cancel) { _ in
+                // Обработка выбора отмены
+            },
+        ]
+        actions.forEach {
+            alertController.addAction($0)
+            $0.setValue(UIColor.black, forKey: "titleTextColor")
+        }
+
+        present(alertController, animated: true, completion: nil)
+    }
+
+    @objc private func changeGrid(_ sender: UIButton!) {
+        if changeGridButtonClicked == false {
             let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
                 guard let self = self else { return nil }
-                let section = self.sections[sectionIndex]
+                let section = self.viewModel.sections.value[sectionIndex]
                 switch section {
                 case .products(_):
-                    return self.createProductsSection(itemWidth: ((self.view.frame.width - 20.0)/2), itemHeight: 1,
-                                                      groupWidth: (self.view.frame.width - 10.0), groupHeight: 0.3)
+                    return self.createProductsSection(
+                        itemWidth: ((self.view.frame.width - 20.0)/2),
+                        itemHeight: 1,
+                        groupWidth: (self.view.frame.width - 10.0),
+                        groupHeight: 0.3
+                    )
                 }
             }
-            
+
             collectionView.setCollectionViewLayout(layout, animated: true)
             sender.setImage(UIImage(systemName: "square"), for: .normal)
-            buttonClicked = true
-        } else if buttonClicked == true {
+            changeGridButtonClicked = true
+        } else {
             let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
                 guard let self = self else { return nil }
-                let section = self.sections[sectionIndex]
+                let section = self.viewModel.sections.value[sectionIndex]
                 switch section {
                 case .products(_):
-                    return self.createProductsSection(itemWidth: (self.view.frame.width - 10.0), itemHeight: 1,
-                                                      groupWidth: (self.view.frame.width - 10.0), groupHeight: 0.3)
+                    return self.createProductsSection(
+                        itemWidth: (self.view.frame.width - 10.0),
+                        itemHeight: 1,
+                        groupWidth: (self.view.frame.width - 10.0),
+                        groupHeight: 0.3
+                    )
                 }
             }
             collectionView.setCollectionViewLayout(layout, animated: true) { [weak self] _ in
                 self?.collectionView.setContentOffset(.zero, animated: true)
             }
             sender.setImage(UIImage(systemName: "square.grid.2x2"), for: .normal)
-            buttonClicked = false
+            changeGridButtonClicked = false
         }
     }
 }
@@ -206,64 +202,47 @@ extension HomeViewController {
         navigationController?.navigationBar.backgroundColor = .black
         navigationController?.navigationBar.isTranslucent = false
     }
-    
+
     func createCustomTitleView(title: String, subtitle: String, image: String = "CARINCASA_logo") -> UIView {
-        
         let view = UIView()
         view.frame = CGRect(x: 0, y: 0, width: 280, height: 41)
-        
-        let logoImage: UIImageView = {
-            let view = UIImageView()
-            view.image = UIImage(named: image)
-            view.frame = CGRect(x: 5, y: 0, width: 40, height: 40)
-            view.contentMode = .scaleAspectFill
-            view.clipsToBounds = true
-            return view
-        }()
-        
-        let titleLabel: UILabel = {
-            let view = UILabel()
-            view.frame = CGRect(x: 55, y: 0, width: 220, height: 20)
-            view.textColor =  #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-            return view
-        }()
-        
+
+        let logoImage = UIImageView()
+        logoImage.image = UIImage(named: image)
+        logoImage.frame = CGRect(x: 5, y: 0, width: 40, height: 40)
+        logoImage.contentMode = .scaleAspectFill
+        logoImage.clipsToBounds = true
+
+        let titleLabel = UILabel()
+        titleLabel.frame = CGRect(x: 55, y: 0, width: 220, height: 20)
+        titleLabel.textColor =  #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+
         if let firstFont = UIFont(name: "FuturaPT-Medium", size: 20), let secondFont = UIFont(name: "FuturaPT-Light", size: 20) {
-            let firstAttributes: [NSAttributedString.Key: Any] = [
-                NSAttributedString.Key.font: firstFont
-            ]
-            
-            let secondAttributes: [NSAttributedString.Key: Any] = [
-                NSAttributedString.Key.font: secondFont
-            ]
-            
+            let firstAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: firstFont]
+            let secondAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: secondFont]
+
             let attributedString = NSMutableAttributedString(string: title)
             attributedString.addAttributes(firstAttributes, range: NSRange(location: 0, length: 5))
             attributedString.addAttributes(secondAttributes, range: NSRange(location: 6, length: 4))
-            
+
             titleLabel.attributedText = attributedString
         } else {
             titleLabel.font = UIFont(name: "FuturaPT-Medium", size: 20)
             titleLabel.text = title
         }
-        let descriptionLabel: UILabel = {
-            let view = UILabel()
-            view.text = subtitle
-            view.frame = CGRect(x: 55, y: 21, width: 220, height: 20)
-            view.font = UIFont(name: "FuturaPT-Light", size: 14)
-            view.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-            return view
-        }()
-        
+        let descriptionLabel = UILabel()
+        descriptionLabel.text = subtitle
+        descriptionLabel.frame = CGRect(x: 55, y: 21, width: 220, height: 20)
+        descriptionLabel.font = UIFont(name: "FuturaPT-Light", size: 14)
+        descriptionLabel.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+
         view.addSubview(logoImage)
         view.addSubview(titleLabel)
         view.addSubview(descriptionLabel)
-        
         return view
     }
-    
+
     func createCustomButton(imageName: String, selector: Selector) -> UIBarButtonItem {
-        
         let button = UIButton(type: .system)
         button.setImage(
             UIImage(systemName: imageName)?.withRenderingMode(.alwaysTemplate),
@@ -274,9 +253,7 @@ extension HomeViewController {
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.addTarget(self, action: selector, for: .touchUpInside)
-        
-        let menuBarItem = UIBarButtonItem(customView: button)
-        return menuBarItem
+        return UIBarButtonItem(customView: button)
     }
 }
 
@@ -285,15 +262,19 @@ extension HomeViewController {
     private func createLayout() -> UICollectionViewCompositionalLayout {
         UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
             guard let self = self else { return nil }
-            let section = self.sections[sectionIndex]
+            let section = self.viewModel.sections.value[sectionIndex]
             switch section {
             case .products(_):
-                return self.createProductsSection(itemWidth: (self.view.frame.width - 10.0), itemHeight: 1,
-                                                  groupWidth: (self.view.frame.width - 10.0), groupHeight: 0.3)
+                return self.createProductsSection(
+                    itemWidth: (self.view.frame.width - 10.0),
+                    itemHeight: 1,
+                    groupWidth: (self.view.frame.width - 10.0),
+                    groupHeight: 0.3
+                )
             }
         }
     }
-    
+
     private func createProductsSection(itemWidth: Double, itemHeight: Double,
                                        groupWidth: Double, groupHeight: Double) -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .absolute(itemWidth),
@@ -310,74 +291,50 @@ extension HomeViewController {
         section.supplementaryContentInsetsReference = .automatic
         return section
     }
-    
+
     private func supplementaryHeaderItem(height: Double) -> NSCollectionLayoutBoundarySupplementaryItem {
-            return .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(height)),
-                  elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        return .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(height)),
+                     elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
     }
 }
-    
-// MARK: - UICollectionViewDelegate
-extension HomeViewController: UICollectionViewDelegate {
 
-}
-
-// MARK: - UICollectionViewDataSource
-extension HomeViewController: UICollectionViewDataSource {
-
+// MARK: - UICollectionViewDelegate, UICollectionViewDataSource
+extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        sections.count
+        viewModel.sections.value.count
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        sections[section].count
+        viewModel.sections.value[section].count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch sections[indexPath.section] {
-        case .products(let products):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductsCell.identifier, for: indexPath) as? ProductsCell
-            else {
-                return UICollectionViewCell()
+        switch viewModel.sections.value[indexPath.section] {
+        case let .products(products):
+            let cell: ProductsCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
+            if let imageURL = URL(string: "https://carincasa.na4u.ru/image/\(products[indexPath.row].collectionImage).png") {
+                cell.imageView.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
             }
-//            if let imageURL = URL(string: "http://localhost:3000/image/\(products[indexPath.row].collectionImage).png") {
-//                cell.imageView.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
-//                cell.configureCell(titleString: products[indexPath.row].name)
-//                return cell
-//            } else {
-//                cell.configureCell(titleString: products[indexPath.row].name)
-//                return cell
-//            }
-            cell.imageView.image = UIImage(named: "placeholder")
-            cell.configureCell(titleString: products[indexPath.row].title)
+            cell.configure(title: products[indexPath.row].name)
             return cell
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        switch kind {
-        case UICollectionView.elementKindSectionHeader:
-            guard let header = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: HeaderSupplementaryView.identifier,
-                for: indexPath) as? HeaderSupplementaryView
-            else {
-                return UICollectionReusableView()
-            }
-            header.configureHeader(titleString: sections[indexPath.section].title)
+        if kind == UICollectionView.elementKindSectionHeader {
+            let header: HeaderSupplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, forIndexPath: indexPath)
+            header.configure(title: viewModel.sections.value[indexPath.section].title)
             return header
-        default:
-            return UICollectionReusableView()
         }
+        return UICollectionReusableView()
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch sections[indexPath.section] {
-        case .products(let product):
-            let newVC = ProductViewController()
-            newVC.hidesBottomBarWhenPushed = true
-//            newVC.identifier = product[indexPath.item].id
-            self.navigationController?.pushViewController(newVC, animated: true)
+        switch viewModel.sections.value[indexPath.section] {
+        case let .products(product):
+            let viewController = ProductViewController(viewModel: ProductViewModel(productId: product[indexPath.item].id))
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }

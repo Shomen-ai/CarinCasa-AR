@@ -1,7 +1,8 @@
 import UIKit
 
 final class PriceCell: UICollectionViewCell {
-    
+    // MARK: - UI Components
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -23,12 +24,21 @@ final class PriceCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+
+    // MARK: - Lifecycle
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }
-    
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Methods
+
     func setupLayout() {
         contentView.addSubview(titleLabel)
         contentView.addSubview(priceLabel)
@@ -44,12 +54,8 @@ final class PriceCell: UICollectionViewCell {
         ])
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func configureCell(titleString: String, priceString: String) {
-        titleLabel.text = titleString
-        priceLabel.text = priceString
+    func configure(title: String, price: String) {
+        titleLabel.text = title
+        priceLabel.text = price
     }
 }

@@ -1,7 +1,9 @@
 import UIKit
 
 final class ProductViewCell: UICollectionViewCell {
-    
+
+    // MARK: - UI Components
+
     private let imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
@@ -9,12 +11,21 @@ final class ProductViewCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
+    // MARK: - Lifecycle
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }
-    
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Methods
+
     func setupLayout() {
         contentView.addSubview(imageView)
 //        contentView.backgroundColor = .red
@@ -25,14 +36,15 @@ final class ProductViewCell: UICollectionViewCell {
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func configureCell(imageName: String, name: String) {
-        imageView.image = UIImage(named: imageName)
-        self.imageView.sd_setImage(with: URL(string: "http://localhost:3000/data/\(name.replacingOccurrences(of: " ", with: "%20"))/\(imageName).png"),
-                                   placeholderImage: UIImage(named: "placeholder"))
+
+    func configure(imageName: String, name: String?) {
+        if let newName = name {
+            imageView.sd_setImage(
+                with: URL(string: "https://carincasa.na4u.ru/data/\(newName.replacingOccurrences(of: " ", with: "%20"))/\(imageName).png"),
+                placeholderImage: UIImage(named: "placeholder")
+            )
+        } else {
+            imageView.image = UIImage(named: "placeeholder")
+        }
     }
 }

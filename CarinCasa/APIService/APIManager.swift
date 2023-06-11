@@ -7,7 +7,7 @@ class APIManager {
     private init() {}
     
     func fetchData(completion: @escaping (Result<Product, APIError>) -> Void) {
-        guard let url = URL(string: "http://localhost:3000/data/allFurniture") else {
+        guard let url = URL(string: "https://carincasa.na4u.ru/data/allFurniture") else {
             completion(.failure(APIError.connectionError))
             return
         }
@@ -38,7 +38,7 @@ class APIManager {
     }
     
     func findOne(id: String, completion: @escaping (Result<Furniture, APIError>) -> Void) {
-        guard let url = URL(string: "http://localhost:3000/data/allFurniture/\(id)") else {
+        guard let url = URL(string: "https://carincasa.na4u.ru/data/allFurniture/\(id)") else {
             completion(.failure(APIError.connectionError))
             return
         }
@@ -65,27 +65,6 @@ class APIManager {
         }
         
         task.resume()
-    }
-
-    func getImage(imageName: String, completion: @escaping (Result<UIImage, APIError>) -> Void) {
-        guard let url = URL(string: "http://localhost:3000/data/image/\(imageName).png") else {
-            completion(.failure(APIError.invalidUrl))
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(APIError.connectionError))
-                return
-            }
-            
-            guard let data = data, let image = UIImage(data: data) else {
-                completion(.failure(APIError.failToFetchData))
-                return
-            }
-            
-            completion(.success(image))
-        }.resume()
     }
 
 }

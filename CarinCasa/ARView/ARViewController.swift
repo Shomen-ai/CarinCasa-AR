@@ -3,12 +3,24 @@ import RealityKit
 import ARKit
 
 final class ARViewController: UIViewController {
-
+    
+    // MARK: - Properties
+    
     private let arView: ARView = {
         let view = ARView()
         return view
     }()
-
+    
+    private var floorFound: Bool = false {
+            didSet {
+                if floorFound {
+                    showFloorFoundAlert()
+                }
+            }
+        }
+    
+    // MARK: - Lifecycle
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         view.addSubview(arView)
@@ -17,7 +29,14 @@ final class ARViewController: UIViewController {
 
         arView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(recognizer:))))
     }
-
+    
+    // MARK: - Methods
+    private func showFloorFoundAlert() {
+        let alertController = UIAlertController(title: "Пол найден", message: "Пол был успешно обнаружен.", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+    }
+    
     private func setupARView() {
         arView.automaticallyConfigureSession = false
         let configuration = ARWorldTrackingConfiguration()
@@ -63,6 +82,15 @@ extension ARViewController: ARSessionDelegate {
             if let anchorName = anchor.name, anchor.name == "Henry" {
                 placeObject(named: anchorName, for: anchor)
             }
+        }
+    }
+    
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        let raycast = arView.raycast(from: arView.center,
+                                                    allowing: .estimatedPlane,
+                                                    alignment: .horizontal)
+        if let firstItemOfRaycast = raycast.first, !floorFound {
+            floorFound = true
         }
     }
 }
