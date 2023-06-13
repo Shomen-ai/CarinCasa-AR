@@ -44,6 +44,7 @@ final class ConfiguratorCell: UICollectionViewCell {
         view.register(ConfiguratorSubCell.self)
         view.showsVerticalScrollIndicator = false
         view.allowsSelection = true
+        view.allowsMultipleSelection = true
         return view
     }()
 
@@ -53,6 +54,7 @@ final class ConfiguratorCell: UICollectionViewCell {
         super.init(frame: frame)
         setupLayout()
         setupCollectionView()
+        print(collectionView.allowsMultipleSelection)
     }
 
     @available(*, unavailable)

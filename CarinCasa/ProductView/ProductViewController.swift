@@ -190,10 +190,10 @@ extension ProductViewController {
 extension ProductViewController: ConfiguratorCellDelegate {
     func update(configuration: ConfigurationModel) {
         if let configurationIndex = viewModel.configurations.firstIndex(where: { $0.title == configuration.title }) {
-            print("update configurationIndex", configurationIndex)
-            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
+//            print("update configurationIndex", configurationIndex)
+//            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
             viewModel.configurations[configurationIndex] = configuration
-            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
+//            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
         }
         viewModel.totalSum = viewModel.configurations.map({ $0.options }).flatMap({ $0 }).filter({ $0.isSelected }).map({ Int($0.price) ?? 0 }).reduce(0, +)
         viewModel.updateSections()
