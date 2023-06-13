@@ -76,6 +76,7 @@ final class ProductViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.getData()
+        viewModel.updateSections()
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
@@ -85,8 +86,8 @@ final class ProductViewController: UIViewController {
             }
             self.navigationItem.titleView = self.createTitleView(title: furniture.name,
                                                                  subtitle: furniture.type)
-            self.setLoading(false)
             self.collectionView.reloadData()
+            self.setLoading(false)
         }
     }
     
@@ -189,10 +190,10 @@ extension ProductViewController {
 extension ProductViewController: ConfiguratorCellDelegate {
     func update(configuration: ConfigurationModel) {
         if let configurationIndex = viewModel.configurations.firstIndex(where: { $0.title == configuration.title }) {
-//            print("update configurationIndex", configurationIndex)
-//            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
+            print("update configurationIndex", configurationIndex)
+            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
             viewModel.configurations[configurationIndex] = configuration
-//            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
+            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
         }
         viewModel.totalSum = viewModel.configurations.map({ $0.options }).flatMap({ $0 }).filter({ $0.isSelected }).map({ Int($0.price) ?? 0 }).reduce(0, +)
         viewModel.updateSections()
@@ -348,14 +349,15 @@ extension ProductViewController: UICollectionViewDelegate, UICollectionViewDataS
                 cell.configure(title: configurator[indexPath.row].title,
                                configuration: configurator[indexPath.row],
                                multipleSelection: true)
+                cell.delegate = self
             } else {
                 cell.configure(title: configurator[indexPath.row].title,
                                configuration: configurator[indexPath.row],
                                multipleSelection: false)
+                cell.delegate = self
             }
-            cell.delegate = self
             return cell
-
+            
         case let .price(price):
             let cell: PriceCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
             cell.configure(title: price[indexPath.row][0], price: price[indexPath.row][1])

@@ -9,7 +9,6 @@ protocol ProductViewModelProtocol: AnyObject {
     var furniture: Furniture? { get }
     var configurations: [ConfigurationModel] { get set }
     var productId: String { get }
-    var price: [Int] { get }
     var totalSum: Int { get set }
     // MARK: - Methods
     
@@ -29,8 +28,6 @@ final class ProductViewModel: ProductViewModelProtocol {
     
     var productId: String
     
-    var price: [Int] = [0]
-    
     var totalSum: Int = 0
     // MARK: - Lifecycle
     
@@ -48,8 +45,7 @@ final class ProductViewModel: ProductViewModelProtocol {
             case let .success(furniture):
                 self.furniture = furniture
                 self.configurations = furniture.configurations.map({ $0.toConfigurationModel })
-                self.price = Array(repeating: 0, count: furniture.configurations.count)
-                self.updateSections()
+                self.totalSum = self.configurations.map({ $0.options }).flatMap({ $0 }).filter({ $0.isSelected }).map({ Int($0.price) ?? 0 }).reduce(0, +)
             case let .failure(error):
                 print(error)
             }

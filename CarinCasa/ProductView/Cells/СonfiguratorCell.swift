@@ -65,8 +65,6 @@ final class ConfiguratorCell: UICollectionViewCell {
     private func setupLayout() {
         contentView.addSubview(titleLabel)
         contentView.addSubview(collectionView)
-        collectionView.delegate = self
-        collectionView.dataSource = self
 //        contentView.backgroundColor = .red
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 5),
@@ -90,7 +88,7 @@ final class ConfiguratorCell: UICollectionViewCell {
     func configure(title: String, configuration: ConfigurationModel, multipleSelection: Bool) {
         titleLabel.text = title
         self.configuration = configuration
-        self.collectionView.allowsMultipleSelection = multipleSelection
+        collectionView.allowsMultipleSelection = multipleSelection
     }
 }
 

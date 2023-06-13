@@ -9,12 +9,11 @@ final class InfoViewController: UIViewController {
         collectionView.backgroundColor = .none
         collectionView.bounces = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: ProfileCell.identifier)
-        collectionView.register(OrdersCell.self, forCellWithReuseIdentifier: OrdersCell.identifier)
-        collectionView.register(InfoCell.self, forCellWithReuseIdentifier: InfoCell.identifier)
+        collectionView.register(ProfileCell.self)
+        collectionView.register(OrdersCell.self)
+        collectionView.register(InfoCell.self)
         collectionView.register(HeaderSupplementaryView.self,
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: HeaderSupplementaryView.identifier)
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader)
         return collectionView
     }()
     
@@ -201,27 +200,18 @@ extension InfoViewController: UICollectionViewDataSource {
         switch sections[indexPath.section] {
             
         case .profile(let profile):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileCell.identifier, for: indexPath) as? ProfileCell
-            else {
-                return UICollectionViewCell()
-            }
+            let cell: ProfileCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
             cell.configureCell(imageName: profile[indexPath.item].image,
                                titleString: profile[indexPath.item].title)
             return cell
             
         case .order(let order):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OrdersCell.identifier, for: indexPath) as? OrdersCell
-            else {
-                return UICollectionViewCell()
-            }
+            let cell: OrdersCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
             cell.configureCell(imageName: order[indexPath.item].orderImage)
             return cell
             
         case .info(let info):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InfoCell.identifier, for: indexPath) as? InfoCell
-            else {
-                return UICollectionViewCell()
-            }
+            let cell: InfoCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
             cell.configureCell(imageName: info[indexPath.item].image,
                                titleString: info[indexPath.item].title)
             return cell

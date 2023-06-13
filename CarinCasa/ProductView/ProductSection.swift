@@ -44,11 +44,4 @@ enum ProductSection {
             return ""
         }
     }
-
-    mutating func setOrderItems(_ newItems: [[String]]) {
-        guard case .price = self else {
-            return
-        }
-        self = .price(newItems)
-    }
 }
