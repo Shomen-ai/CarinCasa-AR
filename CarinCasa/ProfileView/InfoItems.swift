@@ -1,5 +1,6 @@
 struct OrderItem {
     let orderImage: String
+    let id: String
 }
 
 struct InfoItem {

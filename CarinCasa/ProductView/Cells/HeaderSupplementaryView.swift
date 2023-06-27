@@ -2,10 +2,6 @@ import UIKit
 
 final class HeaderSupplementaryView: UICollectionReusableView {
     
-    public class var identifier: String {
-        return "\(self.self)"
-    }
-    
     private let headerLabel: UILabel = {
         let label = UILabel()
         label.text = "Header"

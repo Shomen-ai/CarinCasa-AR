@@ -79,21 +79,21 @@ final class ARViewController: UIViewController {
     }
     
     func placeObject(named entityName: String, for anchor: ARAnchor) {
-//        do {
-//            let entity = try ModelEntity.loadModel(named: entityName)
-//            entity.setScale(SIMD3<Float>(repeating: 0.005), relativeTo: nil)
-//            entity.generateCollisionShapes(recursive: true)
-//            arView.installGestures([.rotation, .translation, .scale], for: entity)
-//
-//            let anchorEntity = AnchorEntity(anchor: anchor)
-//            anchorEntity.addChild(entity)
-//            arView.scene.addAnchor(anchorEntity)
-//        } catch {
-//            let alertController = UIAlertController(title: "Ошибка",
-//                                                    message: "Модель не найдена", preferredStyle: .alert)
-//            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//            present(alertController, animated: true, completion: nil)
-//        }
+        do {
+            let entity = try ModelEntity.loadModel(named: entityName)
+            entity.setScale(SIMD3<Float>(repeating: 0.005), relativeTo: nil)
+            entity.generateCollisionShapes(recursive: true)
+            arView.installGestures([.rotation, .translation, .scale], for: entity)
+
+            let anchorEntity = AnchorEntity(anchor: anchor)
+            anchorEntity.addChild(entity)
+            arView.scene.addAnchor(anchorEntity)
+        } catch {
+            let alertController = UIAlertController(title: "Ошибка",
+                                                    message: "Модель не найдена", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alertController, animated: true, completion: nil)
+        }
     }
 }
 

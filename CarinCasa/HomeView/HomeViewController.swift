@@ -195,6 +195,7 @@ final class HomeViewController: UIViewController {
         }
     }
 }
+
 // MARK: - Setup NavigationBar
 extension HomeViewController {
     private func setupNavBar() {

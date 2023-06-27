@@ -54,7 +54,6 @@ final class ConfiguratorCell: UICollectionViewCell {
         super.init(frame: frame)
         setupLayout()
         setupCollectionView()
-        print(collectionView.allowsMultipleSelection)
     }
 
     @available(*, unavailable)
@@ -113,13 +112,11 @@ extension ConfiguratorCell: UICollectionViewDelegate, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         configuration.options[indexPath.row].isSelected = true
-        print("didSelectItemAt", configuration.options[indexPath.row])
         delegate?.update(configuration: configuration)
     }
 
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         configuration.options[indexPath.row].isSelected = false
-        print("didDeselectItemAt", configuration.options[indexPath.row])
         delegate?.update(configuration: configuration)
     }
 }

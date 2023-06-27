@@ -1,12 +1,14 @@
 import UIKit
 
 // MARK: - InfoViewController
+
 final class InfoViewController: UIViewController {
     
+    // MARK: - UI Components
+    
     private let collectionView: UICollectionView = {
-        let collectionViewLayout = UICollectionViewLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-        collectionView.backgroundColor = .none
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+        collectionView.backgroundColor = .white
         collectionView.bounces = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(ProfileCell.self)
@@ -14,10 +16,58 @@ final class InfoViewController: UIViewController {
         collectionView.register(InfoCell.self)
         collectionView.register(HeaderSupplementaryView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader)
+        collectionView.register(EmptySectionDecorationItem.self,
+                                forSupplementaryViewOfKind: "emptySectionBackground")
         return collectionView
     }()
     
-    private let sections = MockDataForInfoViewController.shared.pageData
+    // MARK: - Properties
+    
+    private let viewModel: InfoViewModelProtocol
+    
+    // MARK: - Life cycle
+    
+    init(viewModel: InfoViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        setupNavBar()
+        navigationItem.titleView = createCustomTitleView(title: "CARIN CASA", subtitle: "ИНФОРМАЦИЯ")
+        setupConstraints()
+        setDelegate()
+        collectionView.collectionViewLayout = createLayout()
+        collectionView.collectionViewLayout.register(EmptySectionDecorationItem.self,
+                                                     forDecorationViewOfKind: "emptySectionBackground")
+        
+        viewModel.sections.add(subscriber: "viewModel.sections") { [weak self] old, new in
+            guard let self = self else {
+                return
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.collectionView.reloadData()
+            }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.updateSection()
+    }
+
+    deinit {
+        viewModel.sections.remove(subscriber: "viewModel.sections")
+    }
+    
+    // MARK: - Methods
     
     private func setDelegate() {
         collectionView.delegate = self
@@ -34,17 +84,10 @@ final class InfoViewController: UIViewController {
         ])
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        setupNavBar()
-        navigationItem.titleView = createCustomTitleView(title: "CARIN CASA", subtitle: "ИНФОРМАЦИЯ")
-        setupConstraints()
-        setDelegate()
-        collectionView.collectionViewLayout = createLayout()
-    }
+    
 }
 // MARK: - Setup NavBar
+
 extension InfoViewController {
     private func setupNavBar() {
         navigationController?.navigationBar.barTintColor = .black
@@ -107,17 +150,18 @@ extension InfoViewController {
         return view
     }
 }
+
 // MARK: - Create Layout
 extension InfoViewController {
     private func createLayout() -> UICollectionViewCompositionalLayout {
         UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
             guard let self = self else { return nil }
-            let section = self.sections[sectionIndex]
+            let section = self.viewModel.sections.value[sectionIndex]
             switch section {
             case.profile(_):
                 return self.createProfileSection()
-            case .order(_):
-                return self.createOrdersSection()
+            case .order(let orders):
+                return self.createOrdersSection(itemsCount: orders.count)
             case .info(_):
                 return self.createInfoSection()
             }
@@ -140,7 +184,7 @@ extension InfoViewController {
         return section
     }
     
-    private func createOrdersSection() -> NSCollectionLayoutSection {
+    private func createOrdersSection(itemsCount: Int) -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1),
                                                             heightDimension: .fractionalHeight(1)))
         
@@ -148,13 +192,19 @@ extension InfoViewController {
                                                                          heightDimension: .fractionalHeight(0.2)),
                                                      subitems: [item])
         group.interItemSpacing = .fixed(5)
-        group.edgeSpacing = .init(leading: .fixed(0), top: .fixed(0), trailing: .fixed(5), bottom: .fixed(0))
+        group.edgeSpacing = .init(leading: .fixed(0), top: .fixed(5), trailing: .fixed(5), bottom: .fixed(0))
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 5
         section.orthogonalScrollingBehavior = .continuous
         section.contentInsetsReference = .none
         section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 30)]
         section.supplementaryContentInsetsReference = .automatic
+        
+        if itemsCount == 0 {
+            let decorationItem = NSCollectionLayoutDecorationItem.background(elementKind: "emptySectionBackground")
+            section.decorationItems = [decorationItem]
+        }
+        
         return section
     }
     
@@ -165,85 +215,65 @@ extension InfoViewController {
                                                                        heightDimension: .estimated(50)),
                                                        subitems: [item])
         group.interItemSpacing = .fixed(5)
-        group.edgeSpacing = .init(leading: .fixed(5), top: .fixed(5), trailing: .fixed(5), bottom: .fixed(0))
+        group.edgeSpacing = .init(leading: .fixed(5), top: .fixed(10), trailing: .fixed(5), bottom: .fixed(0))
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .none
         section.interGroupSpacing = 5
-        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 0.1)]
+        section.boundarySupplementaryItems = [self.supplementaryHeaderItem(height: 10)]
         section.supplementaryContentInsetsReference = .automatic
         return section
     }
     
     private func supplementaryHeaderItem(height: Double) -> NSCollectionLayoutBoundarySupplementaryItem {
-            return .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(height)),
-                  elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        return .init(
+            layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(height)),
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
     }
 }
 
-// MARK: - UICollectionViewDelegate
-extension InfoViewController: UICollectionViewDelegate {
-    
-}
-
-// MARK: - UICollectionViewDataSource
-extension InfoViewController: UICollectionViewDataSource {
+// MARK: - UICollectionViewDelegate, UICollectionViewDataSource
+extension InfoViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        sections.count
+        viewModel.sections.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        sections[section].count
+        viewModel.sections.value[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch sections[indexPath.section] {
-            
-        case .profile(let profile):
+        switch viewModel.sections.value[indexPath.section] {
+        case let .profile(profile):
             let cell: ProfileCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
-            cell.configureCell(imageName: profile[indexPath.item].image,
-                               titleString: profile[indexPath.item].title)
+            cell.configure(imageName: profile[indexPath.item].image, title: profile[indexPath.item].title)
             return cell
             
-        case .order(let order):
+        case let .order(order):
             let cell: OrdersCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
-            cell.configureCell(imageName: order[indexPath.item].orderImage)
+            cell.configure(imageName: order[indexPath.item].orderImage)
             return cell
             
-        case .info(let info):
+        case let .info(info):
             let cell: InfoCell = collectionView.dequeueReusableCell(forIndexPath: indexPath)
-            cell.configureCell(imageName: info[indexPath.item].image,
-                               titleString: info[indexPath.item].title)
+            cell.configure(imageName: info[indexPath.item].image, title: info[indexPath.item].title)
             return cell
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        switch kind {
-        case UICollectionView.elementKindSectionHeader:
-            guard let header = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: HeaderSupplementaryView.identifier,
-                for: indexPath) as? HeaderSupplementaryView
-            else {
-                return UICollectionReusableView()
-            }
-            header.configure(title: sections[indexPath.section].title)
+        if kind == UICollectionView.elementKindSectionHeader {
+            let header: HeaderSupplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, forIndexPath: indexPath)
+            header.configure(title: viewModel.sections.value[indexPath.section].title)
             return header
-        default:
-            return UICollectionReusableView()
         }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch sections[indexPath.section] {
-        case .profile(_):
-            print("go to profile")
-        case .order(_):
-            print("go to order")
-        case .info(_):
-            print("go to info")
-        }
-            
+        if kind == "emptySectionBackground" {
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "EmptySectionDecorationItem", for: indexPath)
+                // Настройте вашу декоративную вью, например, установите фон или текст
+                return view
+            }
+        return UICollectionReusableView()
     }
 }

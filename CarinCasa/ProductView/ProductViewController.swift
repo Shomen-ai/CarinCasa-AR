@@ -22,9 +22,9 @@ final class ProductViewController: UIViewController {
     }()
 
     private lazy var loadingView: ZXLoadingView = {
-        let rect: CGRect = CGRect(x: view.center.x, y: view.center.y, width: 100, height: 100)
+        let rect: CGRect = CGRect(x: self.view.center.x, y: self.view.center.y, width: 100, height: 100)
         let view: ZXLoadingView = ZXLoadingView(frame:rect)
-        view.center = CGPoint(x: view.center.x, y: view.center.y - 80)
+        view.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 80)
         view.color = .none
         view.tintColor = .black
         view.lineWidth = 2.0
@@ -114,7 +114,6 @@ final class ProductViewController: UIViewController {
     }
     
     @objc private func showARModule() {
-        print("ARModule was showed")
         let viewController = ARViewController()
         viewController.hidesBottomBarWhenPushed = true
         viewController.navigationController?.navigationBar.isHidden = true
@@ -190,10 +189,7 @@ extension ProductViewController {
 extension ProductViewController: ConfiguratorCellDelegate {
     func update(configuration: ConfigurationModel) {
         if let configurationIndex = viewModel.configurations.firstIndex(where: { $0.title == configuration.title }) {
-//            print("update configurationIndex", configurationIndex)
-//            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
             viewModel.configurations[configurationIndex] = configuration
-//            print("update configurations[configurationIndex]", viewModel.configurations[configurationIndex])
         }
         viewModel.totalSum = viewModel.configurations.map({ $0.options }).flatMap({ $0 }).filter({ $0.isSelected }).map({ Int($0.price) ?? 0 }).reduce(0, +)
         viewModel.updateSections()
@@ -377,6 +373,35 @@ extension ProductViewController: UICollectionViewDelegate, UICollectionViewDataS
             return header
         }
         return UICollectionReusableView()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch viewModel.sections.value[indexPath.section] {
+        case .order(_):
+            guard let furniture = viewModel.furniture else {
+                return
+            }
+            let newOrder: [String: String] = ["collectionImage": furniture.collectionImage,
+                                              "id": furniture.id]
+            var arrayOfOrders = UserDefaults.standard.array(forKey: "userOrders") as? [[String: String]] ?? []
+            arrayOfOrders.append(newOrder)
+            UserDefaults.standard.set(arrayOfOrders, forKey: "userOrders")
+            UserDefaults.standard.synchronize()
+            
+            
+            let alertController = UIAlertController(title: "Успешный заказ",
+                                                    message: "Ваш заказ был успешно оформлен.",
+                                                    preferredStyle: .alert)
+            alertController.view.tintColor = ColorPalette.goldGradientLight[1]
+            let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+                alertController.dismiss(animated: true, completion: nil)
+            }
+
+            alertController.addAction(okAction)
+            present(alertController, animated: true, completion: nil)
+        default:
+            return
+        }
     }
 }
 

@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 
 class APIManager {
     static let shared = APIManager()
@@ -14,7 +13,6 @@ class APIManager {
         
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
-                print("1")
                 completion(.failure(APIError.unexpectedError))
                 return
             }
@@ -29,7 +27,6 @@ class APIManager {
                 let result = Product(furniture: decodedData)
                 completion(.success(result))
             } catch {
-                print("2")
                 completion(.failure(APIError.unexpectedError))
             }
         }
@@ -45,7 +42,6 @@ class APIManager {
         
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
-                print("1")
                 completion(.failure(APIError.unexpectedError))
                 return
             }
@@ -59,7 +55,6 @@ class APIManager {
                 let result = try JSONDecoder().decode(Furniture.self, from: data)
                 completion(.success(result))
             } catch {
-                print("2")
                 completion(.failure(APIError.unexpectedError))
             }
         }

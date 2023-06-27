@@ -16,7 +16,7 @@ final class MainTabBarController: UITabBarController {
                 image: UIImage(systemName: "house")
             ),
             generateVC(
-                viewController: InfoViewController(),
+                viewController: InfoViewController(viewModel: InfoViewModel()),
                 image: UIImage(systemName: "person.crop.circle")
             )
         ]

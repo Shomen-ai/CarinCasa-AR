@@ -46,8 +46,8 @@ final class ProductViewModel: ProductViewModelProtocol {
                 self.furniture = furniture
                 self.configurations = furniture.configurations.map({ $0.toConfigurationModel })
                 self.totalSum = self.configurations.map({ $0.options }).flatMap({ $0 }).filter({ $0.isSelected }).map({ Int($0.price) ?? 0 }).reduce(0, +)
-            case let .failure(error):
-                print(error)
+            case let .failure(_):
+                return
             }
         }
     }

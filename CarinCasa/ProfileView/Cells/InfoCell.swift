@@ -1,14 +1,16 @@
 import UIKit
 
 final class InfoCell: UICollectionViewCell {
-    
+
+    // MARK: - UI Components
+
     private let imageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.tintColor = .black
         return view
     }()
-    
+
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.textColor = .black
@@ -17,7 +19,7 @@ final class InfoCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     private let arrowImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -25,18 +27,25 @@ final class InfoCell: UICollectionViewCell {
         view.image = UIImage(systemName: "arrow.right")
         return view
     }()
-    
-    
+
+    // MARK: - Lifecycle
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }
-    
-    func setupLayout() {
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Methods
+
+    private func setupLayout() {
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(arrowImageView)
-        contentView.backgroundColor = ColorPalette.backgrounColor
         contentView.layer.borderColor = UIColor.black.cgColor
         contentView.layer.borderWidth = 1
         contentView.layer.cornerRadius = 25
@@ -52,13 +61,9 @@ final class InfoCell: UICollectionViewCell {
             arrowImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
         ])
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func configureCell(imageName: String, titleString: String) {
+
+    func configure(imageName: String, title: String) {
         imageView.image = UIImage(systemName: imageName)
-        titleLabel.text = titleString
+        titleLabel.text = title
     }
 }
