@@ -1,6 +1,6 @@
 <h1 align="center">CARINCASA</h1>
-
-<img src="./readme_assets/h2.png" width="100%">
+<p align="center">
+<img src="readmeAssets/h2.png" width="50%"></p>
 
 ## Description
 <p align="center">
