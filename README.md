@@ -12,6 +12,6 @@ This concept application was developed for the company CARINCSA as a thesis. It 
 ### Technologies used
 - The **SDWebImage** library was used to download and cache images. The rest of the code was written with native Swift;
 - The MVVM architecture was chosen because it will be easy to test, and it is also one of the easily scalable architectures;
-- CompositionalLayout was used for the views, which was both an excellent choice and a torment. I express my great gratitude to Evgeny Popov for his help with it.
+- CompositionalLayout was used for the views, which was both an excellent choice and a torment. I express my great gratitude to [Evgeny Popov](https://github.com/eugeneMedia) for his help with it.
 <p align="center">
 </p>
